@@ -60,7 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\IAllPongMessage.cs" />
     <Compile Include="Actors\PingActor.cs" />
+    <Compile Include="Actors\PingBlockingActor.cs" />
+    <Compile Include="Messages\PongBlockingMessage.cs" />
     <Compile Include="Messages\ProcessStashedMessage.cs" />
     <Compile Include="Messages\CriticalErrorMessage.cs" />
     <Compile Include="Messages\UnHandledMessageReceived.cs" />

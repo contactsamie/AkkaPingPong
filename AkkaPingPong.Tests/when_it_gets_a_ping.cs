@@ -17,7 +17,7 @@ namespace AkkaPingPong.Tests
         public void it_should_do_a_pong()
         {
             //Act
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                  System.Threading.Thread.Sleep(1000);
                  ApplicationActorSystem.AppActorRef.Tell(new PingMessage());
@@ -29,5 +29,6 @@ namespace AkkaPingPong.Tests
             AwaitAssert(() => Subscriber.ExpectMsg<PongMessage>(), TimeSpan.FromSeconds(20));
 
         }
+       
     }
 }

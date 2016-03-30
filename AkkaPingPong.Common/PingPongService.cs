@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace AkkaPingPong.Common
 {
@@ -7,6 +8,12 @@ namespace AkkaPingPong.Common
         public void Execute()
         {
             Console.WriteLine("Pong");
+        }
+
+        public async Task ExecuteAsync()
+        {
+            await Task.Delay(5000);
+            Console.WriteLine("Pong Async");
         }
     }
 }

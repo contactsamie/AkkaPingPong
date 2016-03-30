@@ -9,12 +9,15 @@ namespace AkkaPingPong.Core.Actors
     public class PingCoordinatorActor : ReceiveActor, IWithUnboundedStash
     {
         private IActorRef PingActorRef { set; get; }
+        private IActorRef PingBlockingActorRef { set; get; }
         public DateTime StartTime { get; set; }
         private ICancelable UnStashSchedule { set; get; }
 
         public PingCoordinatorActor()
         {
             PingActorRef = Context.ActorOf(Context.System.DI().Props<PingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
+            PingBlockingActorRef = Context.ActorOf(Context.System.DI().Props<PingBlockingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
+
             StartTime = DateTime.Now;
             Become(Initializing);
         }
@@ -42,10 +45,10 @@ namespace AkkaPingPong.Core.Actors
             {
                 Console.WriteLine("About to ping ...");
                 PingActorRef.Tell(message);
+                PingBlockingActorRef.Tell(message);
             });
-            Receive<PongMessage>((message) =>
+            Receive<IAllPongMessage>((message) =>
             {
-                // Context.Stop(PingActorRef);
                 Console.WriteLine("I got a pong ...");
                 Context.System.EventStream.Publish(message);
             });
@@ -55,12 +58,11 @@ namespace AkkaPingPong.Core.Actors
 
         protected override void PreStart()
         {
-            UnStashSchedule = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1),TimeSpan.FromSeconds(1), Self, new ProcessStashedMessage(), Self);
+            UnStashSchedule = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), Self, new ProcessStashedMessage(), Self);
         }
 
         protected override void PostStop()
         {
-          
             UnStashSchedule.CancelIfNotNull();
         }
 
