@@ -8,12 +8,23 @@ namespace AkkaPingPong.Core.Actors
     {
         public PingBlockingActor(IPingPongService service)
         {
-            Receive<PingMessage>(async message =>
+            Receive<bool>( message =>
+            {
+                 Sender.Tell(new PongBlockingMessage());
+            });
+
+            Receive<PingMessage>( message =>
+            {
+                 service.ExecuteAsync().PipeTo(Self,Sender);
+            });
+            /*
+             Receive<PingMessage>(async message =>
             {
                 var sender = Sender;
                 await service.ExecuteAsync();
                 sender.Tell(new PongBlockingMessage());
             });
+            */
         }
     }
 }
