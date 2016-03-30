@@ -3,6 +3,7 @@ using Akka.DI.Core;
 using Akka.Routing;
 using AkkaPingPong.Core.Messages;
 using System;
+using Akka.Event;
 
 namespace AkkaPingPong.Core.Actors
 {
@@ -12,18 +13,23 @@ namespace AkkaPingPong.Core.Actors
         private IActorRef PingBlockingActorRef { set; get; }
         public DateTime StartTime { get; set; }
         private ICancelable UnStashSchedule { set; get; }
-
+        private  ILoggingAdapter _logger = Context.GetLogger();
         public PingCoordinatorActor()
         {
+            _logger.Debug(GetType().FullName + " Running ...");
+
             PingActorRef = Context.ActorOf(Context.System.DI().Props<PingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
             PingBlockingActorRef = Context.ActorOf(Context.System.DI().Props<PingBlockingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
 
             StartTime = DateTime.Now;
+           
+
             Become(Initializing);
         }
 
         public void Initializing()
         {
+            _logger.Debug(GetType().FullName + " becoming initializing ...");
             Receive<ProcessStashedMessage>(message =>
             {
                 if (!((DateTime.Now - StartTime).TotalSeconds > 5)) return;
@@ -35,12 +41,14 @@ namespace AkkaPingPong.Core.Actors
             ReceiveAny(message =>
             {
                 Console.WriteLine("Sorry, staching for now ...");
+                _logger.Debug(GetType().FullName + " stashing ...");
                 Stash.Stash();
             });
         }
 
         public void Processing()
         {
+            _logger.Debug(GetType().FullName + " becoming processing ...");
             Receive<PingMessage>((message) =>
             {
                 Console.WriteLine("About to ping ...");
@@ -58,6 +66,7 @@ namespace AkkaPingPong.Core.Actors
 
         protected override void PreStart()
         {
+            _logger.Debug(GetType().FullName + " prestart schedule check setup ...");
             UnStashSchedule = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1), Self, new ProcessStashedMessage(), Self);
         }
 
