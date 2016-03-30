@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Core", "AkkaPingPong.Core\AkkaPingPong.Core.csproj", "{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Common", "AkkaPingPong.Common\AkkaPingPong.Common.csproj", "{01C7598F-564F-43E0-8D27-FC2979295830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.ActorSystemLib", "AkkaPingPong.ActorSystemLib\AkkaPingPong.ActorSystemLib.csproj", "{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.DependencyLib", "AkkaPingPong.DependencyLib\AkkaPingPong.DependencyLib.csproj", "{8281D78F-13EE-4F61-8ED2-8A6A90C35DEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Tests", "AkkaPingPong.Tests\AkkaPingPong.Tests.csproj", "{E229E5FE-B683-447D-B18D-A295A81789D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Client", "AkkaPingPong.Client\AkkaPingPong.Client.csproj", "{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C7598F-564F-43E0-8D27-FC2979295830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C7598F-564F-43E0-8D27-FC2979295830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C7598F-564F-43E0-8D27-FC2979295830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C7598F-564F-43E0-8D27-FC2979295830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8281D78F-13EE-4F61-8ED2-8A6A90C35DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8281D78F-13EE-4F61-8ED2-8A6A90C35DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8281D78F-13EE-4F61-8ED2-8A6A90C35DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8281D78F-13EE-4F61-8ED2-8A6A90C35DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E229E5FE-B683-447D-B18D-A295A81789D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E229E5FE-B683-447D-B18D-A295A81789D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E229E5FE-B683-447D-B18D-A295A81789D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E229E5FE-B683-447D-B18D-A295A81789D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
