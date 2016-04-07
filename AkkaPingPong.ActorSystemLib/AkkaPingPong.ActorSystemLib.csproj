@@ -60,8 +60,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorMetaData.cs" />
+    <Compile Include="ActorSetUpOptions.cs" />
     <Compile Include="ApplicationActorSystem.cs" />
+    <Compile Include="IApplicationActorSelectors.cs" />
+    <Compile Include="ISelectableActor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateMessages\ClearRecordActorStateHistoryMessage.cs" />
+    <Compile Include="StateMessages\GetActorStateHistoryMessage.cs" />
+    <Compile Include="StateMessages\GetActorStateMessage.cs" />
+    <Compile Include="StateMessages\RecordActorStateHistoryMessage.cs" />
+    <Compile Include="SelectableActor.cs" />
+    <Compile Include="StatefullReceiveActor.cs" />
+    <Compile Include="StateMessages\StopRecordActorStateHistoryMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

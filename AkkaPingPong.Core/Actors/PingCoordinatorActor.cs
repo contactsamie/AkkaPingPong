@@ -1,28 +1,29 @@
 ﻿using Akka.Actor;
-using Akka.DI.Core;
+using Akka.Event;
 using Akka.Routing;
+using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.Core.Messages;
 using System;
-using Akka.Event;
 
 namespace AkkaPingPong.Core.Actors
 {
-    public class PingCoordinatorActor : ReceiveActor, IWithUnboundedStash
+    public class PingCoordinatorActor : StatefullReceiveActor, IWithUnboundedStash
     {
         private IActorRef PingActorRef { set; get; }
         private IActorRef PingBlockingActorRef { set; get; }
         public DateTime StartTime { get; set; }
         private ICancelable UnStashSchedule { set; get; }
-        private  ILoggingAdapter _logger = Context.GetLogger();
-        public PingCoordinatorActor()
+        private ILoggingAdapter _logger = Context.GetLogger();
+
+        public PingCoordinatorActor(IPingPongActorSelectors pingPongActorSelectors)
         {
             _logger.Debug(GetType().FullName + " Running ...");
 
-            PingActorRef = Context.ActorOf(Context.System.DI().Props<PingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
-            PingBlockingActorRef = Context.ActorOf(Context.System.DI().Props<PingBlockingActor>().WithRouter(new RoundRobinPool(5, new DefaultResizer(1, 10))));
+            PingActorRef = pingPongActorSelectors.PingActorSelector.Create(Context, new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
+
+            PingBlockingActorRef = pingPongActorSelectors.PingBlockingActorSelector.Create(Context, new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
 
             StartTime = DateTime.Now;
-           
 
             Become(Initializing);
         }

@@ -13,14 +13,15 @@ namespace AkkaPingPong.Tests
     public abstract class AkkaTestBase : TestKit
     {
         protected TestProbe Subscriber { set; get; }
+        public IPingPongActorSelectors Selector { set; get; }
 
         [SetUp]
         protected void SetUp()
         {
-            ApplicationActorSystem.StartUpActorSystem<PingPongActor, PingPongSubscriber>(DependencyResolver.GetContainer(), Sys, (builder) =>
-             {
-                 builder.Register<IPingPongService>(b => new FakePingPongService());
-             });
+            Selector = ApplicationActorSystem.Register<PingPongActorSelectors, IPingPongActorSelectors>(DependencyResolver.GetContainer(), (builder) =>
+              {
+                  builder.Register<IPingPongService>(b => new FakePingPongService());
+              }, Sys);
             Subscriber = CreateTestProbe();
             Sys.EventStream.Subscribe(Subscriber.Ref, typeof(object));
         }

@@ -1,6 +1,6 @@
 namespace AkkaPingPong.Core.Messages
 {
-    public class PongBlockingMessage: IAllPongMessage
+    public class PongBlockingMessage : IAllPongMessage
     {
     }
 }

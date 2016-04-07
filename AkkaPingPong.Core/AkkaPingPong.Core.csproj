@@ -68,6 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="States\PingPongActorState.cs" />
+    <Compile Include="PingPongActorSelectors.cs" />
+    <Compile Include="IPingPongActorSelectors.cs" />
     <Compile Include="Messages\IAllPongMessage.cs" />
     <Compile Include="Actors\PingActor.cs" />
     <Compile Include="Actors\PingBlockingActor.cs" />
@@ -76,9 +79,9 @@
     <Compile Include="Messages\CriticalErrorMessage.cs" />
     <Compile Include="Messages\UnHandledMessageReceived.cs" />
     <Compile Include="Messages\PingMessage.cs" />
-    <Compile Include="PingPongActor.cs" />
+    <Compile Include="Actors\PingPongActor.cs" />
     <Compile Include="Actors\PingCoordinatorActor.cs" />
-    <Compile Include="PingPongSubscriber.cs" />
+    <Compile Include="Actors\PingPongSubscriber.cs" />
     <Compile Include="Messages\PongMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

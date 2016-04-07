@@ -8,30 +8,26 @@ using System.Threading.Tasks;
 
 namespace AkkaPingPong.ActorSystemLib
 {
-    public static class ApplicationActorSystem
+    public class ApplicationActorSystem
     {
-        private static IContainer Container { set; get; }
-
-        public static IActorRef AppActorRef { get; set; }
-
-        public static IActorRef AppActorSubscriberRef { get; set; }
+        public static IContainer Container { set; get; }
 
         public static ActorSystem ActorSystem { get; set; }
 
-        public static void StartUpActorSystem<T, TSub>(IContainer container, ActorSystem actorSystem = null, Action<ContainerBuilder> postBuildOperation = null) where T : ActorBase where TSub : ActorBase
+        public static TIActorsSelectors Register<TActorsSelectors, TIActorsSelectors>(IContainer container, Action<ContainerBuilder> postBuildOperation = null, ActorSystem actorSystem = null) where TActorsSelectors : IApplicationActorSelectors, new() where TIActorsSelectors : IApplicationActorSelectors
         {
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            ActorSystem = actorSystem ?? ActorSystem.Create(typeof(ApplicationActorSystem).Name);
             var builder = new ContainerBuilder();
+            builder.Register(x => (TActorsSelectors)new TActorsSelectors().SetUpActors(ActorSystem)).As<TIActorsSelectors>().SingleInstance();
             builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies()).Where(t => typeof(ReceiveActor).IsAssignableFrom(t));
             postBuildOperation?.Invoke(builder);
             builder.Update(container);
-            Container = container;
-            ActorSystem = actorSystem ?? ActorSystem.Create(typeof(ApplicationActorSystem).Name);
             IDependencyResolver resolver = new AutoFacDependencyResolver(container, ActorSystem);
-            AppActorRef = ActorSystem.ActorOf(ActorSystem.DI().Props<T>(), typeof(T).Name);
-            AppActorSubscriberRef = ActorSystem.ActorOf(ActorSystem.DI().Props<TSub>(), typeof(TSub).Name);
-            ActorSystem.EventStream.Subscribe(AppActorSubscriberRef, typeof(object));
+            Container = container;
+            return container.Resolve<TIActorsSelectors>();
         }
-        
+
         public static void ShutDownActorSystem()
         {
             Task.WaitAll(ActorSystem != null ? ActorSystem.Terminate() : Task.FromResult(true));
