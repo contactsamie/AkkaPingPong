@@ -1,7 +1,6 @@
-﻿using Akka.Actor;
+﻿using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.Core.Messages;
 using System;
-using AkkaPingPong.ActorSystemLib;
 
 namespace AkkaPingPong.Core.Actors
 {

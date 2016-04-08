@@ -10,13 +10,13 @@ namespace AkkaPingPong.ActorSystemLib
 
         public Type Actortype { private set; get; }
 
-        public ISelectableActor SetUp<T>(ActorSystem system, string actorName, ActorMetaData parentActorMetaData = null) where T : ActorBase
+        public ISelectableActor SetUp<T>(ActorSystem system, string actorName = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {
-            ActorName = actorName;
-
             Actortype = typeof(T);
 
-            ActorMetaData = new ActorMetaData(actorName, parentActorMetaData);
+            ActorName = string.IsNullOrEmpty(actorName) ? Actortype.Name.Split('`')[0] : actorName;
+
+            ActorMetaData = new ActorMetaData(ActorName, parentActorMetaData);
 
             return this;
         }

@@ -2,21 +2,23 @@ using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.Core.Messages;
 using AkkaPingPong.Core.States;
+using System;
 
 namespace AkkaPingPong.Core.Actors
 {
-    public class PingPongActor : StatefullReceiveActor<PingPongActorState>
+    public class PingPongActor<TPingCoordinatorActor> : StatefullReceiveActor<PingPongActorState> where TPingCoordinatorActor : ActorBase
     {
-        private static IActorRef PingPongCoordinatorActorRef { set; get; }
+        private IActorRef PingPongCoordinatorActorRef { set; get; }
 
-        public PingPongActor(IPingPongActorSelectors pingPongActorSelectors)
+        public PingPongActor()
         {
-            PingPongCoordinatorActorRef = pingPongActorSelectors.PingCoordinatorActorSelector.Create(Context);
-
+            PingPongCoordinatorActorRef = Context.CreateActor<TPingCoordinatorActor>();
+            Console.WriteLine(typeof(TPingCoordinatorActor).FullName);
             Receive<PingMessage>(message =>
             {
-                SetState(new PingPongActorState() { Message = message});
+                SetState(new PingPongActorState() { Message = message });
                 PingPongCoordinatorActorRef.Forward(message);
+                Sender.Tell(new PingMessageCompleted());
             });
 
             ReceiveAny(message => Context.System.EventStream.Publish(new UnHandledMessageReceived()));

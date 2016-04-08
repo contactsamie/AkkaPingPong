@@ -71,6 +71,10 @@
       <Project>{01C7598F-564F-43E0-8D27-FC2979295830}</Project>
       <Name>AkkaPingPong.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.Core\AkkaPingPong.Core.csproj">
+      <Project>{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}</Project>
+      <Name>AkkaPingPong.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

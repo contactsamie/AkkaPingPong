@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="ActorMetaData.cs" />
     <Compile Include="ActorSetUpOptions.cs" />
+    <Compile Include="ActorSystemExtensions.cs" />
     <Compile Include="ApplicationActorSystem.cs" />
     <Compile Include="IApplicationActorSelectors.cs" />
     <Compile Include="ISelectableActor.cs" />

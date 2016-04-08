@@ -1,6 +1,6 @@
 ﻿using Akka.TestKit;
 using Akka.TestKit.NUnit;
-using AkkaPingPong.ActorSystemLib;
+using Akka.TestKit.TestActors;
 using AkkaPingPong.Common;
 using AkkaPingPong.Core;
 using AkkaPingPong.DependencyLib;
@@ -12,16 +12,33 @@ namespace AkkaPingPong.Tests
 {
     public abstract class AkkaTestBase : TestKit
     {
+        public class BlackHoleActor1 : BlackHoleActor { }
+
+        public class BlackHoleActor2 : BlackHoleActor { }
+
+        public class BlackHoleActor3 : BlackHoleActor { }
+
+        public class BlackHoleActor4 : BlackHoleActor { }
+
+        public class BlackHoleActor5 : BlackHoleActor { }
+
         protected TestProbe Subscriber { set; get; }
-        public IPingPongActorSelectors Selector { set; get; }
+
+        protected IActorSystemFactory ActorSystemfactory { set; get; }
 
         [SetUp]
-        protected void SetUp()
+        public void SetUp()
         {
-            Selector = ApplicationActorSystem.Register<PingPongActorSelectors, IPingPongActorSelectors>(DependencyResolver.GetContainer(), (builder) =>
-              {
-                  builder.Register<IPingPongService>(b => new FakePingPongService());
-              }, Sys);
+            var preBuilder = new ContainerBuilder();
+            preBuilder.Register(x => new FakeActorSystemFactory()).As<IActorSystemFactory>().SingleInstance();
+            preBuilder.Update(DependencyResolver.GetContainer());
+
+            ActorSystemfactory = DependencyResolver.GetContainer().Resolve<IActorSystemFactory>();
+
+            ActorSystemfactory.Register(DependencyResolver.GetContainer(), (builder) =>
+            {
+                builder.Register<IPingPongService>(b => new FakePingPongService());
+            }, Sys);
             Subscriber = CreateTestProbe();
             Sys.EventStream.Subscribe(Subscriber.Ref, typeof(object));
         }
@@ -29,7 +46,7 @@ namespace AkkaPingPong.Tests
         [TearDown]
         protected void TearDown()
         {
-            ApplicationActorSystem.ShutDownActorSystem();
+            ActorSystemfactory.ShutDownActorSystem();
         }
 
         public void JustWait(int durationMilliseconds = 600000)

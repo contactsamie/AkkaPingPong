@@ -10,22 +10,33 @@ namespace AkkaPingPong.ActorSystemLib
 {
     public class ApplicationActorSystem
     {
-        public static IContainer Container { set; get; }
-
         public static ActorSystem ActorSystem { get; set; }
 
-        public static TIActorsSelectors Register<TActorsSelectors, TIActorsSelectors>(IContainer container, Action<ContainerBuilder> postBuildOperation = null, ActorSystem actorSystem = null) where TActorsSelectors : IApplicationActorSelectors, new() where TIActorsSelectors : IApplicationActorSelectors
+        public static void Register(IContainer container, Action<ContainerBuilder> postBuildOperation = null, ActorSystem actorSystem = null)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             ActorSystem = actorSystem ?? ActorSystem.Create(typeof(ApplicationActorSystem).Name);
             var builder = new ContainerBuilder();
-            builder.Register(x => (TActorsSelectors)new TActorsSelectors().SetUpActors(ActorSystem)).As<TIActorsSelectors>().SingleInstance();
             builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies()).Where(t => typeof(ReceiveActor).IsAssignableFrom(t));
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes().Where(type => type.IsAssignableTo<ActorBase>()))
+                {
+                    if (type.IsGenericType)
+                    {
+                        builder.RegisterGeneric(type);
+                    }
+                    else
+                    {
+                        builder.RegisterType(type);
+                    }
+                }
+            }
+
             postBuildOperation?.Invoke(builder);
             builder.Update(container);
             IDependencyResolver resolver = new AutoFacDependencyResolver(container, ActorSystem);
-            Container = container;
-            return container.Resolve<TIActorsSelectors>();
         }
 
         public static void ShutDownActorSystem()

@@ -1,9 +1,9 @@
 using Akka.Actor;
 using Akka.Event;
+using AkkaPingPong.ActorSystemLib.StateMessages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using AkkaPingPong.ActorSystemLib.StateMessages;
 
 namespace AkkaPingPong.ActorSystemLib
 {
@@ -39,7 +39,7 @@ namespace AkkaPingPong.ActorSystemLib
             });
             Receive<ClearRecordActorStateHistoryMessage>(message =>
             {
-                StateHistory= new Dictionary<Guid, Tuple<T, DateTime>>() ;
+                StateHistory = new Dictionary<Guid, Tuple<T, DateTime>>();
             });
         }
 

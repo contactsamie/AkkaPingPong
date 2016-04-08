@@ -1,4 +1,5 @@
 ﻿using AkkaPingPong.Common;
+using AkkaPingPong.Core;
 using Autofac;
 using System;
 
@@ -16,6 +17,8 @@ namespace AkkaPingPong.DependencyLib
             }
             var builder = new ContainerBuilder();
             builder.RegisterType<PingPongService>().As<IPingPongService>();
+            builder.Register(x => new ActorSystemFactory()).As<IActorSystemFactory>().SingleInstance();
+
             builderFunc?.Invoke(builder);
 
             Container = builder.Build();

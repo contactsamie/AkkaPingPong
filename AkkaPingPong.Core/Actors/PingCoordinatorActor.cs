@@ -7,7 +7,7 @@ using System;
 
 namespace AkkaPingPong.Core.Actors
 {
-    public class PingCoordinatorActor : StatefullReceiveActor, IWithUnboundedStash
+    public class PingCoordinatorActor<TPingActor, TPingBlockingActor> : StatefullReceiveActor, IWithUnboundedStash where TPingActor : ActorBase where TPingBlockingActor : ActorBase
     {
         private IActorRef PingActorRef { set; get; }
         private IActorRef PingBlockingActorRef { set; get; }
@@ -15,13 +15,16 @@ namespace AkkaPingPong.Core.Actors
         private ICancelable UnStashSchedule { set; get; }
         private ILoggingAdapter _logger = Context.GetLogger();
 
-        public PingCoordinatorActor(IPingPongActorSelectors pingPongActorSelectors)
+        public PingCoordinatorActor()
         {
             _logger.Debug(GetType().FullName + " Running ...");
 
-            PingActorRef = pingPongActorSelectors.PingActorSelector.Create(Context, new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
+            PingActorRef = Context.CreateActor<TPingActor>(new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
 
-            PingBlockingActorRef = pingPongActorSelectors.PingBlockingActorSelector.Create(Context, new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
+            PingBlockingActorRef = Context.CreateActor<TPingBlockingActor>(new ActorSetUpOptions() { RouterConfig = new RoundRobinPool(5, new DefaultResizer(1, 10)) });
+
+            Console.WriteLine(typeof(TPingBlockingActor).FullName);
+            Console.WriteLine(typeof(TPingActor).FullName);
 
             StartTime = DateTime.Now;
 
@@ -44,6 +47,7 @@ namespace AkkaPingPong.Core.Actors
                 Console.WriteLine("Sorry, staching for now ...");
                 _logger.Debug(GetType().FullName + " stashing ...");
                 Stash.Stash();
+                Sender.Tell(new SorryImStashing());
             });
         }
 
