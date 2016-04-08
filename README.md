@@ -1,7 +1,7 @@
 # AkkaPingPong
 
         [Test]
-        public void it_should_do_a_pong_unit1()
+        public void it_should_do_a_pong()
         {
             //Arrange
             ActorSystemfactory.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>();
