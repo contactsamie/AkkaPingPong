@@ -19,8 +19,7 @@ namespace AkkaPingPong.Tests
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
-                ActorSystemfactory.ActorSystem.LocateActor<PingPongActor<PingCoordinatorActor
-                    <PingActor, PingBlockingActor>>>().Tell(new PingMessage());
+                ActorSystemfactory.ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
             JustWait(5000);
             //Assert
@@ -36,7 +35,7 @@ namespace AkkaPingPong.Tests
             {
                 System.Threading.Thread.Sleep(1000);
 
-                ActorSystemfactory.ActorSystem.LocateActor<PingPongActor<BlackHoleActor>>().Tell(new PingMessage());
+                ActorSystemfactory.ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
 
             //Assert
@@ -49,7 +48,7 @@ namespace AkkaPingPong.Tests
             //Act
             ActorSystemfactory.ActorSystem.CreateActor<PingCoordinatorActor<BlackHoleActor1, BlackHoleActor2>>();
 
-            ActorSystemfactory.ActorSystem.LocateActor<PingCoordinatorActor<BlackHoleActor1, BlackHoleActor2>>().Tell(new PingMessage());
+            ActorSystemfactory.ActorSystem.LocateActor(typeof(PingCoordinatorActor<,>)).Tell(new PingMessage());
 
             //Assert
             AwaitAssert(() => ExpectMsg<SorryImStashing>(), TimeSpan.FromSeconds(20));

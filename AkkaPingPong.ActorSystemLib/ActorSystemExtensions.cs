@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Akka.Actor;
 
 namespace AkkaPingPong.ActorSystemLib
@@ -6,7 +8,7 @@ namespace AkkaPingPong.ActorSystemLib
     {
         //todo maybe cache actor selection
 
-        internal static ISelectableActor CreateActorSelector<T>(this ActorSystem actorSystem, ActorMetaData parentActorMetaData = null, string user = null) where T : ActorBase
+        internal static ISelectableActor CreateActorSelector<T>(this ActorSystem actorSystem, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {
             return new SelectableActor().SetUp<T>(actorSystem, null, parentActorMetaData);
         }
@@ -19,9 +21,46 @@ namespace AkkaPingPong.ActorSystemLib
         /// <param name="context"></param>
         /// <param name="parentActorMetaData"></param>
         /// <returns></returns>
-        public static ActorSelection LocateActor<T>(this ActorSystem actorSystem, ActorMetaData parentActorMetaData = null, string user = null) where T : ActorBase
+        public static ActorSelection LocateActor<T>(this ActorSystem actorSystem, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {
-            return actorSystem.CreateActorSelector<T>(parentActorMetaData, user).Select();
+            return actorSystem.LocateActor(typeof(T), parentActorMetaData);
+        }
+
+        public static ActorSelection LocateActor<T>(this ActorSystem actorSystem, ActorSelection parentActorSelection) where T : ActorBase
+        {
+            return actorSystem.LocateActor(typeof(T), parentActorSelection);
+        }
+
+        public static ActorSelection LocateActor(this ActorSystem actorSystem, Type type, ActorMetaData parentActorMetaData = null)
+        {
+            return SelectableActor.Select(type, parentActorMetaData, actorSystem);
+        }
+
+        public static ActorSelection LocateActor(this ActorSystem actorSystem, Type type, ActorSelection parentActorSelection)
+        {
+            if (parentActorSelection == null) throw new ArgumentNullException(nameof(parentActorSelection));
+            if (string.IsNullOrEmpty(parentActorSelection.PathString))
+            {
+                throw new Exception("Invalid parent actor path");
+            }
+
+            var parentActorMetaData = new ActorMetaData(parentActorSelection.PathString.Split('/').Last());
+
+            return actorSystem.LocateActor(type, parentActorMetaData);
+        }
+
+        public static ActorSelection LocateActor<T, TP>(this ActorSystem actorSystem) where T : ActorBase where TP : ActorBase
+        {
+            var parentActorSelection = actorSystem.LocateActor(typeof(TP));
+
+            if (string.IsNullOrEmpty(parentActorSelection.PathString))
+            {
+                throw new Exception("Invalid parent actor path");
+            }
+
+            var parentActorMetaData = new ActorMetaData(parentActorSelection.PathString.Split('/').Last());
+
+            return actorSystem.CreateActorSelector<T>(parentActorMetaData).Select();
         }
 
         public static string GetActorName<T>(this ActorSystem actorSystem) where T : ActorBase

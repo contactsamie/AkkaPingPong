@@ -14,13 +14,32 @@ namespace AkkaPingPong.ActorSystemLib
         {
             Actortype = typeof(T);
 
-            ActorName = string.IsNullOrEmpty(actorName) ? Actortype.Name.Split('`')[0] : actorName;
+            ActorName = GetActorNameByType(actorName, Actortype);
 
-            ActorMetaData = new ActorMetaData(ActorName, parentActorMetaData);
+            ActorMetaData = ActorMetaDataByName(ActorName, parentActorMetaData);
 
             return this;
         }
 
+        public static string GetActorNameByType(string actorName, Type actorType)
+        {
+            if (!typeof(ActorBase).IsAssignableFrom(actorType))
+            {
+                throw new Exception("Object supplied is not an actor");
+            }
+            return string.IsNullOrEmpty(actorName) ? actorType.Name.Split('`')[0] : actorName;
+        }
+
+        public static ActorMetaData ActorMetaDataByName(string actorName, ActorMetaData parentActorMetaData = null)
+        {
+            return new ActorMetaData(actorName, parentActorMetaData);
+        }
+
+        public static ActorSelection Select(Type type, ActorMetaData parentActorMetaData, ActorSystem actorSystem)
+        {
+            var metaData = ActorMetaDataByName(GetActorNameByType(null, type), parentActorMetaData);
+            return actorSystem.ActorSelection(metaData.Path);
+        }
         public ActorMetaData ActorMetaData { get; set; }
 
         public ActorSelection Select(IActorContext context = null)
