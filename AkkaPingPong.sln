@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Tests", "AkkaP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.Client", "AkkaPingPong.Client\AkkaPingPong.Client.csproj", "{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AkkaPingPong.FSTests", "AkkaPingPong.FSTests\AkkaPingPong.FSTests.fsproj", "{696571E8-1719-4E18-82DF-3D53476BE6A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkkaPingPong.AkkaTestBase", "AkkaPingPong.AkkaTestBase\AkkaPingPong.AkkaTestBase.csproj", "{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76BD406B-A9D2-4F81-ADD5-6C85EBBF7F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{696571E8-1719-4E18-82DF-3D53476BE6A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{696571E8-1719-4E18-82DF-3D53476BE6A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{696571E8-1719-4E18-82DF-3D53476BE6A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{696571E8-1719-4E18-82DF-3D53476BE6A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
