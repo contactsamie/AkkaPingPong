@@ -19,8 +19,8 @@ type public when_it_gets_a_ping() =
         //Act
         new PingMessage() |> this.ActorSystem.LocateActor(typedefof<PingPongActor<_>>).Tell  |> ignore
         //Assert
-        this.AwaitAssert  (fun ()->this.ExpectMsg<PingMessageCompleted>() |> ignore),TimeSpan.FromSeconds(5.0) 
-        
+        let result = this.AwaitAssert  (fun ()->this.ExpectMsg<PingMessageCompleted>() |> ignore),TimeSpan.FromSeconds(5.0) 
+        ()
 
      [<Test>]    
      member public  this.it_should_do_a_pong_integration() =
@@ -32,7 +32,8 @@ type public when_it_gets_a_ping() =
                                new PingMessage() |> this.ActorSystem.LocateActor(typedefof<PingPongActor<_>>).Tell 
                                )
         //Assert
-        this.AwaitAssert  (fun ()->this.Subscriber.ExpectMsg<PongMessage>() |> ignore),TimeSpan.FromSeconds(20.0)
+        let result = this.AwaitAssert  (fun ()->this.Subscriber.ExpectMsg<PongMessage>() |> ignore),TimeSpan.FromSeconds(20.0)
+        ()
 
      [<Test>]    
      member  public  this.it_should_do_a_pong_unit1() =
@@ -44,7 +45,8 @@ type public when_it_gets_a_ping() =
                                new PingMessage() |> this.ActorSystem.LocateActor(typedefof<PingPongActor<_>>).Tell
                                )
         //Assert
-        this.AwaitAssert  (fun m->this.ExpectMsg<PingMessageCompleted>() |> ignore),TimeSpan.FromSeconds(20.0) 
+        let result = this.AwaitAssert  (fun m->this.ExpectMsg<PingMessageCompleted>() |> ignore),TimeSpan.FromSeconds(20.0) 
+        ()
 
      [<Test>]    
      member public this.it_should_do_a_pong_unit2() =
@@ -53,4 +55,5 @@ type public when_it_gets_a_ping() =
         //Act
         new PingMessage() |> this.ActorSystem.LocateActor(typedefof<PingCoordinatorActor<_,_>>).Tell  |> ignore
         //Assert
-        this.AwaitAssert  (fun ()->this.ExpectMsg<SorryImStashing>() |> ignore),TimeSpan.FromSeconds(5.0) 
+        let result = this.AwaitAssert  (fun ()->this.ExpectMsg<SorryImStashing>() |> ignore),TimeSpan.FromSeconds(5.0) 
+        ()
