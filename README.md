@@ -1,8 +1,8 @@
 # AkkaPingPong
 
 F#
-        [<Test>]     
-        member public this.``it should do a pong``() =
+     [<Test>]     
+     member public this.``it should do a pong``() =
         //Arrange
         this.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>()  |> ignore
         //Act
@@ -10,6 +10,7 @@ F#
         //Assert
         let result = this.AwaitAssert  (fun ()->this.ExpectMsg<PingMessageCompleted>() |> ignore),TimeSpan.FromSeconds(5.0) 
         ()
+
         
 C#       
         [Test]
