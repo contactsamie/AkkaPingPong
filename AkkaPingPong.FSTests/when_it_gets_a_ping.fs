@@ -1,4 +1,4 @@
-namespace AkkaPingPong.FSTests
+﻿namespace AkkaPingPong.FSTests
 
 open Akka.TestKit.TestActors
 open AkkaPingPong.ActorSystemLib
