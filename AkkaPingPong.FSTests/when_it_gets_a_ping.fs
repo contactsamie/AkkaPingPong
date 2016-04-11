@@ -1,4 +1,4 @@
-﻿namespace AkkaPingPong.FSTests
+namespace AkkaPingPong.FSTests
 
 open Akka.TestKit.TestActors
 open AkkaPingPong.ActorSystemLib
@@ -13,7 +13,7 @@ type public when_it_gets_a_ping() =
   inherit AkkaTestBase() 
 
      [<Test>]     
-      member public  this.it_should_do_a_pong() =
+     member public this.``it should do a pong``() =
         //Arrange
         this.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>()  |> ignore
         //Act
@@ -23,7 +23,7 @@ type public when_it_gets_a_ping() =
         ()
 
      [<Test>]    
-     member public  this.it_should_do_a_pong_integration() =
+     member public this.``it should do a pong integration``() =
         //Arrange
         this.ActorSystem.CreateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>() |> ignore
         //Act
@@ -36,11 +36,11 @@ type public when_it_gets_a_ping() =
         ()
 
      [<Test>]    
-     member  public  this.it_should_do_a_pong_unit1() =
+     member public this.``it should do a pong unit1``() =
         //Arrange
         this.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>() |> ignore
         //Act
-        [1..10] |> List.iter (fun (i)->
+        [1..10] |> List.iter (fun i->
                                System.Threading.Thread.Sleep(1000) |> ignore
                                new PingMessage() |> this.ActorSystem.LocateActor(typedefof<PingPongActor<_>>).Tell
                                )
@@ -49,7 +49,7 @@ type public when_it_gets_a_ping() =
         ()
 
      [<Test>]    
-     member public this.it_should_do_a_pong_unit2() =
+     member public this.``it should do a pong unit2``() =
         //Arrange
         this.ActorSystem.CreateActor<PingCoordinatorActor<AkkaTestBase.BlackHoleActor1, AkkaTestBase.BlackHoleActor2>>()  |> ignore
         //Act
