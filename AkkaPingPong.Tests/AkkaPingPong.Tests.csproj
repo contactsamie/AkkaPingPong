@@ -94,9 +94,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AkkaTestBase.cs" />
-    <Compile Include="FakeActorSystemFactory.cs" />
-    <Compile Include="FakePingPongService.cs" />
     <Compile Include="when_it_gets_a_ping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

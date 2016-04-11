@@ -19,7 +19,7 @@ namespace AkkaPingPong.Client
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
-                actorSystemfactory.ActorSystem.LocateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>().Tell(new PingMessage());
+                actorSystemfactory.ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
             Console.ReadLine();
         }

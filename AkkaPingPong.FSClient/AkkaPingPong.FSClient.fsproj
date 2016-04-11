@@ -1,17 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>696571e8-1719-4e18-82df-3d53476be6a9</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>AkkaPingPong.FSTests</RootNamespace>
-    <AssemblyName>AkkaPingPong.FSTests</AssemblyName>
+    <ProjectGuid>ee1a3d8d-2ae7-43b0-9b9d-77ecdabff1d7</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AkkaPingPong.FSClient</RootNamespace>
+    <AssemblyName>AkkaPingPong.FSClient</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <Name>FShapUnitTest</Name>
-    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
+    <Name>AkkaPingPong.FSClient</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,8 +22,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Library1.XML</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Debug\AkkaPingPong.FSClient.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,26 +33,30 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Library1.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Release\AkkaPingPong.FSClient.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '11.0'">
-      <PropertyGroup>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
         <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
       </PropertyGroup>
     </When>
     <Otherwise>
-      <PropertyGroup>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
         <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
+  <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="when_it_gets_a_ping.fs" />
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="App.config" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -70,42 +76,20 @@
       <HintPath>..\packages\Akka.Logger.NLog.1.0.7\lib\net45\Akka.Logger.NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Akka.TestKit">
-      <HintPath>..\packages\Akka.TestKit.1.0.7\lib\net45\Akka.TestKit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Akka.TestKit.NUnit">
-      <HintPath>..\packages\Akka.TestKit.NUnit.1.0.7\lib\net45\Akka.TestKit.NUnit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Autofac">
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FsUnit.NUnit">
-      <HintPath>..\packages\FsUnit.1.4.1.0\lib\net45\FsUnit.NUnit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
     <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NHamcrest">
-      <HintPath>..\packages\FsUnit.1.4.1.0\lib\net45\NHamcrest.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -122,14 +106,19 @@
       <Project>{7fc8a67d-2a1d-4bec-8c4d-17901f8056ea}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\AkkaPingPong.AkkaTestBase\AkkaPingPong.AkkaTestBase.csproj">
-      <Name>AkkaPingPong.AkkaTestBase</Name>
-      <Project>{fe36d16e-f1b4-43c7-9b24-f7f99b68652d}</Project>
+    <ProjectReference Include="..\AkkaPingPong.Common\AkkaPingPong.Common.csproj">
+      <Name>AkkaPingPong.Common</Name>
+      <Project>{01c7598f-564f-43e0-8d27-fc2979295830}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\AkkaPingPong.Core\AkkaPingPong.Core.csproj">
       <Name>AkkaPingPong.Core</Name>
       <Project>{c2dab73c-884d-435b-849d-a0bd1def0cb6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.DependencyLib\AkkaPingPong.DependencyLib.csproj">
+      <Name>AkkaPingPong.DependencyLib</Name>
+      <Project>{8281d78f-13ee-4f61-8ed2-8a6a90c35dea}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
