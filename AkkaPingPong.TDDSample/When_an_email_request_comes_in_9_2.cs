@@ -2,6 +2,7 @@
 using Akka.TestKit.NUnit;
 using Akka.TestKit.TestActors;
 using AkkaPingPong.ActorSystemLib;
+using AkkaPingPong.ASLTestKit;
 using Autofac;
 using NUnit.Framework;
 
@@ -18,7 +19,7 @@ namespace AkkaPingPong.TDDSample
         {
             //Arrange
             ApplicationActorSystem.Register(new ContainerBuilder().Build(), (builder)=>builder.Register((r)=>new TestEmailSender()).As<IEmailSender>(), Sys);
-            ApplicationActorSystem.ActorSystem.CreateActor<EmailSupervisorActor<BlackHoleActor>>();
+            ApplicationActorSystem.ActorSystem.CreateActor<EmailSupervisorActor<MockActor>>();
             var emailAddress = "test@test.com";
             //Act
             ApplicationActorSystem.ActorSystem.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
