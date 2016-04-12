@@ -116,6 +116,14 @@
       <Project>{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}</Project>
       <Name>AkkaPingPong.ActorSystemLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.AkkaTestBase\AkkaPingPong.AkkaTestBase.csproj">
+      <Project>{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}</Project>
+      <Name>AkkaPingPong.AkkaTestBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.ASLTestKit\AkkaPingPong.ASLTestKit.csproj">
+      <Project>{633732C5-48C1-4C07-A0C1-EF37893D92A7}</Project>
+      <Name>AkkaPingPong.ASLTestKit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

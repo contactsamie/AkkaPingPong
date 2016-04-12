@@ -5,6 +5,8 @@ open AkkaPingPong.ActorSystemLib
 open AkkaPingPong.Core.Actors
 open AkkaPingPong.Core.Messages
 open AkkaPingPong.AkkaTestBase
+open AkkaPingPong.ASLTestKit
+open AkkaPingPong.ASLTestKit.Mocks
 open NUnit.Framework
 open System
 
@@ -15,7 +17,7 @@ type public when_it_gets_a_ping() =
      [<Test>]     
      member public this.``it should do a pong``() =
         //Arrange
-        this.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>()  |> ignore
+        this.ActorSystem.CreateActor<PingPongActor<MockActor>>()  |> ignore
         //Act
         new PingMessage() |> this.ActorSystem.LocateActor<PingPongActor<_>>().Tell  |> ignore
         //Assert
@@ -38,7 +40,7 @@ type public when_it_gets_a_ping() =
      [<Test>]    
      member public this.``it should do a pong unit1``() =
         //Arrange
-        this.ActorSystem.CreateActor<PingPongActor<BlackHoleActor>>() |> ignore
+        this.ActorSystem.CreateActor<PingPongActor<MockActor>>() |> ignore
         //Act
         [1..10] |> List.iter (fun i->
                                System.Threading.Thread.Sleep(1000) |> ignore
@@ -51,7 +53,7 @@ type public when_it_gets_a_ping() =
      [<Test>]    
      member public this.``it should do a pong unit2``() =
         //Arrange
-        this.ActorSystem.CreateActor<PingCoordinatorActor<AkkaTestBase.BlackHoleActor1, AkkaTestBase.BlackHoleActor2>>()  |> ignore
+        this.ActorSystem.CreateActor<PingCoordinatorActor<MockActor1, MockActor2>>()  |> ignore
         //Act
         new PingMessage() |> this.ActorSystem.LocateActor<PingCoordinatorActor<_,_>>().Tell  |> ignore
         //Assert

@@ -3,6 +3,7 @@ using Akka.Actor;
 using Akka.TestKit;
 using Akka.TestKit.NUnit;
 using Akka.TestKit.TestActors;
+
 using AkkaPingPong.Common;
 using AkkaPingPong.Core;
 using AkkaPingPong.DependencyLib;
@@ -13,15 +14,7 @@ namespace AkkaPingPong.AkkaTestBase
 {
     public abstract class AkkaTestBase : TestKit
     {
-        public class BlackHoleActor1 : BlackHoleActor { }
-
-        public class BlackHoleActor2 : BlackHoleActor { }
-
-        public class BlackHoleActor3 : BlackHoleActor { }
-
-        public class BlackHoleActor4 : BlackHoleActor { }
-
-        public class BlackHoleActor5 : BlackHoleActor { }
+     
 
         public TestProbe Subscriber { set; get; }
 
@@ -66,5 +59,7 @@ namespace AkkaPingPong.AkkaTestBase
                 counter++;
             }
         }
+      
+
     }
 }

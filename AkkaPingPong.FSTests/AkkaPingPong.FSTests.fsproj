@@ -127,6 +127,11 @@
       <Project>{fe36d16e-f1b4-43c7-9b24-f7f99b68652d}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.ASLTestKit\AkkaPingPong.ASLTestKit.csproj">
+      <Name>AkkaPingPong.ASLTestKit</Name>
+      <Project>{633732c5-48c1-4c07-a0c1-ef37893d92a7}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\AkkaPingPong.Core\AkkaPingPong.Core.csproj">
       <Name>AkkaPingPong.Core</Name>
       <Project>{c2dab73c-884d-435b-849d-a0bd1def0cb6}</Project>
