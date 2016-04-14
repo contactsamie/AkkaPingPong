@@ -6,7 +6,7 @@ namespace AkkaPingPong.ActorSystemLib
 {
     public static class ActorSystemExtensions
     {
-        //todo maybe cache actor selection
+        // [Obsolete("WARNING: This should never be used outside test environment!!")]
 
         internal static ISelectableActor CreateActorSelector<T>(this ActorSystem actorSystem, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {
@@ -36,17 +36,35 @@ namespace AkkaPingPong.ActorSystemLib
             return SelectableActor.Select(type, parentActorMetaData, actorSystem);
         }
 
+        public static ActorSelection LocateActor(this ActorSystem actorSystem, ActorMetaData actorMetaData)
+        {
+            return SelectableActor.Select(actorMetaData, actorSystem);
+        }
+
         public static ActorSelection LocateActor(this ActorSystem actorSystem, Type type, ActorSelection parentActorSelection)
         {
-            if (parentActorSelection == null) throw new ArgumentNullException(nameof(parentActorSelection));
-            if (string.IsNullOrEmpty(parentActorSelection.PathString))
+
+            return actorSystem.LocateActor(type, parentActorSelection.ToActorMetaData());
+        }
+
+        public static ActorMetaData ToActorMetaData(this ActorSelection selection)
+        {
+            if (selection == null) throw new ArgumentNullException(nameof(selection));
+            if (string.IsNullOrEmpty(selection.PathString))
+            {
+                throw new Exception("Invalid selection actor path");
+            }
+            return new ActorMetaData(selection.PathString.Split('/').Last());
+        }
+
+        public static ActorMetaData ToActorMetaData(this IActorRef actorRef)
+        {
+            if (actorRef == null) throw new ArgumentNullException(nameof(actorRef));
+            if (string.IsNullOrEmpty(actorRef.Path.ToString()))
             {
                 throw new Exception("Invalid parent actor path");
             }
-
-            var parentActorMetaData = new ActorMetaData(parentActorSelection.PathString.Split('/').Last());
-
-            return actorSystem.LocateActor(type, parentActorMetaData);
+            return new ActorMetaData(actorRef.Path.ToString().Split('/').Last());
         }
 
         public static ActorSelection LocateActor<T, TP>(this ActorSystem actorSystem) where T : ActorBase where TP : ActorBase
@@ -72,6 +90,7 @@ namespace AkkaPingPong.ActorSystemLib
         {
             return actorSystem.CreateActorSelector<T>(parentActorMetaData).Create(actorSystem, option);
         }
+
 
         public static IActorRef CreateActor<T>(this IActorContext actorContext, ActorSetUpOptions option = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {

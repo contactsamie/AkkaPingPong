@@ -10,8 +10,12 @@ namespace AkkaPingPong.ActorSystemLib
 
         public Type Actortype { private set; get; }
 
+
+
+
         public ISelectableActor SetUp<T>(ActorSystem system, string actorName = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {
+
             Actortype = typeof(T);
 
             ActorName = GetActorNameByType(actorName, Actortype);
@@ -40,6 +44,13 @@ namespace AkkaPingPong.ActorSystemLib
             var metaData = ActorMetaDataByName(GetActorNameByType(null, type), parentActorMetaData);
             return actorSystem.ActorSelection(metaData.Path);
         }
+
+        public static ActorSelection Select(ActorMetaData metaData, ActorSystem actorSystem)
+        {
+            return actorSystem.ActorSelection(metaData.Path);
+        }
+
+
         public ActorMetaData ActorMetaData { get; set; }
 
         public ActorSelection Select(IActorContext context = null)
@@ -67,7 +78,7 @@ namespace AkkaPingPong.ActorSystemLib
             return actorContext.ActorOf(props, name: ActorName);
         }
 
-        private static Props PrepareProps(ActorSetUpOptions options, Props props)
+        public static Props PrepareProps(ActorSetUpOptions options, Props props)
         {
             if (options != null)
             {
