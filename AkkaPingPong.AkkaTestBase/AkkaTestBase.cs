@@ -8,13 +8,14 @@ using AkkaPingPong.Common;
 using AkkaPingPong.Core;
 using AkkaPingPong.DependencyLib;
 using Autofac;
+using Autofac.Core;
 using NUnit.Framework;
 
 namespace AkkaPingPong.AkkaTestBase
 {
     public abstract class AkkaTestBase : TestKit
     {
-     
+      
 
         public TestProbe Subscriber { set; get; }
 
