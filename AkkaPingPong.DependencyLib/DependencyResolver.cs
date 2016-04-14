@@ -5,7 +5,7 @@ using System;
 
 namespace AkkaPingPong.DependencyLib
 {
-    public class DependencyResolver
+    public class DependencyResolver:IDisposable
     {
         private static Autofac.IContainer Container { set; get; }
 
@@ -23,6 +23,12 @@ namespace AkkaPingPong.DependencyLib
 
             Container = builder.Build();
             return Container;
+        }
+
+        public void Dispose()
+        {
+            Container.Dispose();
+            Container = null;
         }
     }
 }
