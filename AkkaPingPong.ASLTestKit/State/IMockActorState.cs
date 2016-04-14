@@ -1,5 +1,5 @@
+﻿using AkkaPingPong.ASLTestKit.Messages;
 using System.Collections.Generic;
-using AkkaPingPong.ASLTestKit.Messages;
 
 namespace AkkaPingPong.ASLTestKit.State
 {

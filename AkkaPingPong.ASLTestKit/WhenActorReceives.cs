@@ -1,10 +1,10 @@
 using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.ASLTestKit.Messages;
+using AkkaPingPong.ASLTestKit.State;
 using Autofac;
 using System;
 using System.Collections.Generic;
-using AkkaPingPong.ASLTestKit.State;
 
 namespace AkkaPingPong.ASLTestKit
 {

@@ -64,19 +64,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorReceives.cs" />
     <Compile Include="AkkaMockFactory.cs" />
+    <Compile Include="ExpectMockActor.cs" />
+    <Compile Include="State\IMockActorState.cs" />
+    <Compile Include="Models\InjectedActors.cs" />
     <Compile Include="Messages\GetAllPreviousMessagesReceivedByMockActor.cs" />
     <Compile Include="Messages\TellAnotherRefActorMessage.cs" />
-    <Compile Include="WhenActorReceives.cs" />
-    <Compile Include="State\IMockActorState.cs" />
-    <Compile Include="MockActor.cs" />
+    <Compile Include="Messages\MockActorInitializationMessage.cs" />
+    <Compile Include="Mocks\MockActors.cs" />
     <Compile Include="State\MockActorState.cs" />
+    <Compile Include="Messages\MockCreateChildActorMessage.cs" />
+    <Compile Include="WhenActorReceives.cs" />
+    <Compile Include="Mocks\MockActor.cs" />
     <Compile Include="Messages\MockSetUpMessage.cs" />
-    <Compile Include="Mocks\MockActor5.cs" />
-    <Compile Include="Mocks\MockActor1.cs" />
-    <Compile Include="Mocks\MockActor2.cs" />
-    <Compile Include="Mocks\MockActor3.cs" />
-    <Compile Include="Mocks\MockActor4.cs" />
     <Compile Include="Messages\MockThrowExceptionmessage.cs" />
     <Compile Include="Messages\TellAnotherActorMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,7 +90,16 @@
       <Project>{7FC8A67D-2A1D-4BEC-8C4D-17901F8056EA}</Project>
       <Name>AkkaPingPong.ActorSystemLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.AkkaTestBase\AkkaPingPong.AkkaTestBase.csproj">
+      <Project>{FE36D16E-F1B4-43C7-9B24-F7F99B68652D}</Project>
+      <Name>AkkaPingPong.AkkaTestBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.Core\AkkaPingPong.Core.csproj">
+      <Project>{C2DAB73C-884D-435B-849D-A0BD1DEF0CB6}</Project>
+      <Name>AkkaPingPong.Core</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
