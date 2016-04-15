@@ -57,16 +57,16 @@ namespace AkkaPingPong.Core.Actors
             Receive<PingMessage>((message) =>
             {
                 Console.WriteLine("About to ping ...");
-                PingActorRef.Tell(message);
-                PingBlockingActorRef.Tell(message);
+                PingActorRef.Forward(message);
+                PingBlockingActorRef.Forward(message);
             });
             Receive<IAllPongMessage>((message) =>
             {
                 Console.WriteLine("I got a pong ...");
-                Context.System.EventStream.Publish(message);
+                Sender.Tell(message);
             });
 
-            ReceiveAny(message => Context.System.EventStream.Publish(new UnHandledMessageReceived()));
+            ReceiveAny(message => Sender.Tell(new UnHandledMessageReceived()));
         }
 
         protected override void PreStart()

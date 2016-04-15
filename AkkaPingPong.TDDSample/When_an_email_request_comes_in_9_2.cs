@@ -1,31 +1,30 @@
 ﻿using Akka.Actor;
-using Akka.TestKit.NUnit;
-using Akka.TestKit.TestActors;
 using AkkaPingPong.ActorSystemLib;
-using AkkaPingPong.ASLTestKit;
+using AkkaPingPong.AkkaTestBase;
 using AkkaPingPong.ASLTestKit.Mocks;
 using Autofac;
-using NUnit.Framework;
+
+using Xunit;
 
 namespace AkkaPingPong.TDDSample
 {
     /// <summary>
     /// ISOLATING AN ACTOR
     /// </summary>
-    [TestFixture]
-    public class When_an_email_request_comes_in_9_2 :TestKit
+
+    public class When_an_email_request_comes_in_9_2 : TestKitTestBase
     {
-        [Test]
+        [Fact]
         public void it_should_send_it_out()
         {
             //Arrange
-            ApplicationActorSystem.Register(new ContainerBuilder().Build(), (builder)=>builder.Register((r)=>new TestEmailSender()).As<IEmailSender>(), Sys);
-            ApplicationActorSystem.ActorSystem.CreateActor<EmailSupervisorActor<MockActor>>();
+            mockFactory.UpdateContainer((builder) => builder.Register((r) => new TestEmailSender()).As<IEmailSender>());
+            mockFactory.CreateActor<EmailSupervisorActor<MockActor>>();
             var emailAddress = "test@test.com";
             //Act
-            ApplicationActorSystem.ActorSystem.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
+            mockFactory.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
             //Assert
-         
+
             AwaitAssert(() => ExpectMsg<EmailReadyToSendMessage>(message => message.EmailAddress == emailAddress));
             /*
             BECAUSE WE ARE TESTING SUPERVISOR IN ISOLATION!!!
@@ -68,6 +67,7 @@ namespace AkkaPingPong.TDDSample
 
             public string EmailAddress { private set; get; }
         }
+
         public class EmailSentMessage
         {
             public EmailSentMessage(string emailAddress)
@@ -77,6 +77,7 @@ namespace AkkaPingPong.TDDSample
 
             public string EmailAddress { private set; get; }
         }
+
         public class EmailSupervisorActor<TEmailActor> : ReceiveActor where TEmailActor : ActorBase
         {
             public EmailSupervisorActor()
@@ -84,13 +85,14 @@ namespace AkkaPingPong.TDDSample
                 MailActor = Context.System.CreateActor<TEmailActor>();
                 Receive<SendEmailMessage>(message =>
                 {
-                    MailActor.Tell(message,Sender);
+                    MailActor.Forward(message);
                     Sender.Tell(new EmailReadyToSendMessage(message.EmailAddress));
                 });
             }
 
             private IActorRef MailActor { get; set; }
         }
+
         public class EmailActor : ReceiveActor
         {
             public EmailActor(IEmailSender emailSender)

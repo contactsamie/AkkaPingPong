@@ -1,26 +1,27 @@
 ﻿using Akka.Actor;
-using Akka.TestKit.NUnit;
-using AkkaPingPong.ActorSystemLib;
+using AkkaPingPong.AkkaTestBase;
 using Autofac;
-using NUnit.Framework;
+
+using Xunit;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace AkkaPingPong.TDDSample
 {
     /// <summary>
     /// Pass
     /// </summary>
-    [TestFixture]
-    public class When_an_email_request_comes_in_6 :TestKit
+
+    public class When_an_email_request_comes_in_6 : TestKitTestBase
     {
-        [Test]
+        [Fact]
         public void it_should_send_it_out()
         {
             //Arrange
-            ApplicationActorSystem.Register(new ContainerBuilder().Build(), (builder)=>builder.Register((r)=>new TestEmailSender()).As<IEmailSender>(), Sys);
-            ApplicationActorSystem.ActorSystem.CreateActor<EmailActor>();
+            mockFactory.UpdateContainer((builder) => builder.Register((r) => new TestEmailSender()).As<IEmailSender>());
+            mockFactory.CreateActor<EmailActor>();
             var emailAddress = "test@test.com";
             //Act
-            ApplicationActorSystem.ActorSystem.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage(emailAddress));
+            mockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage(emailAddress));
             //Assert
             AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
             Assert.IsTrue(TestEmailSender.HasSentEmail);

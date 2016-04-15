@@ -1,6 +1,6 @@
+using Akka.Actor;
 using System;
 using System.Linq;
-using Akka.Actor;
 
 namespace AkkaPingPong.ActorSystemLib
 {
@@ -43,7 +43,6 @@ namespace AkkaPingPong.ActorSystemLib
 
         public static ActorSelection LocateActor(this ActorSystem actorSystem, Type type, ActorSelection parentActorSelection)
         {
-
             return actorSystem.LocateActor(type, parentActorSelection.ToActorMetaData());
         }
 
@@ -90,7 +89,6 @@ namespace AkkaPingPong.ActorSystemLib
         {
             return actorSystem.CreateActorSelector<T>(parentActorMetaData).Create(actorSystem, option);
         }
-
 
         public static IActorRef CreateActor<T>(this IActorContext actorContext, ActorSetUpOptions option = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
         {

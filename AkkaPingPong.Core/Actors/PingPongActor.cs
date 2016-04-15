@@ -21,7 +21,7 @@ namespace AkkaPingPong.Core.Actors
                 Sender.Tell(new PingMessageCompleted());
             });
 
-            ReceiveAny(message => Context.System.EventStream.Publish(new UnHandledMessageReceived()));
+            ReceiveAny(message => Sender.Tell(new UnHandledMessageReceived()));
         }
     }
 }

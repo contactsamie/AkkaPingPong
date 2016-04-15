@@ -1,6 +1,7 @@
 using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.ASLTestKit.Messages;
+using AkkaPingPong.ASLTestKit.Models;
 using AkkaPingPong.ASLTestKit.State;
 using Autofac;
 using System;
@@ -41,21 +42,15 @@ namespace AkkaPingPong.ASLTestKit
             return this;
         }
 
-        public ActorReceives<T> ItShouldTellAnotherActor<TA>(object message = null)
+        public ActorReceives<T> ItShouldTellAnotherActor<TA>(object message, ActorMetaData parent = null)
         {
-            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(typeof(TA), message, null));
+            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(typeof(TA), message, parent));
             return this;
         }
 
-        public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, ActorSelection parent, object message)
+        public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, object message, ActorSelection parent = null)
         {
-            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(actorType, message, parent.ToActorMetaData()));
-            return this;
-        }
-
-        public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, ActorSelection parent = null)
-        {
-            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(actorType, null, parent?.ToActorMetaData()));
+            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(actorType, message, parent?.ToActorMetaData()));
             return this;
         }
 
@@ -84,7 +79,7 @@ namespace AkkaPingPong.ASLTestKit
             return this;
         }
 
-        public ActorReceives<T> ItShouldTellItToChildActor(Type actorType, object message )
+        public ActorReceives<T> ItShouldTellItToChildActor(Type actorType, object message)
         {
             Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellChildActorTypeMessage(actorType, message));
             return this;
@@ -96,13 +91,13 @@ namespace AkkaPingPong.ASLTestKit
             return this;
         }
 
-        public ActorReceives<T> ItShouldForwardItTo(IActorRef actorType)
+        public ActorReceives<T> ItShouldForwardItTo(IActorRef actorType, object message)
         {
-            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherRefActorMessage(actorType, null));
+            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherRefActorMessage(actorType, message));
             return this;
         }
 
-        public ActorReceives<T> ItShouldTellSender<TResponse>(TResponse response = default(TResponse))
+        public ActorReceives<T> ItShouldTellSender<TResponse>(TResponse response)
         {
             Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), response);
             return this;
@@ -140,7 +135,7 @@ namespace AkkaPingPong.ASLTestKit
 
         protected Type CreateMockActor<TMockActor>(Dictionary<Tuple<Guid, Type>, object> mocks) where TMockActor : ActorBase
         {
-            Console.WriteLine("Setting Up Actor "+typeof(TMockActor).Name+" with "+ mocks .Count+ " items ....");
+            Console.WriteLine("Setting Up Actor " + typeof(TMockActor).Name + " with " + mocks.Count + " items ....");
             foreach (var mock in mocks)
             {
                 var builder = new ContainerBuilder();
@@ -150,12 +145,11 @@ namespace AkkaPingPong.ASLTestKit
                 {
                     var state = (MockActorState)Container.Resolve<IMockActorState>();
                     mockActorState = state ?? mockActorState;
-                  
                 }
                 mockActorState.MockSetUpMessages = mockActorState.MockSetUpMessages ?? new List<MockSetUpMessage>();
                 mockActorState.MockSetUpMessages.Add(new MockSetUpMessage(typeof(TMockActor), mock.Key.Item2, mock.Value));
-                Console.WriteLine("When Received is  " + mock.Key.Item2 + " The response will be "+ mock.Value);
-               
+                Console.WriteLine("When Received is  " + mock.Key.Item2 + " The response will be " + mock.Value);
+
                 builder.RegisterType<IMockActorState>();
                 builder.Register<IMockActorState>(c => mockActorState);
                 builder.Update(Container);
@@ -164,6 +158,12 @@ namespace AkkaPingPong.ASLTestKit
             Console.WriteLine("State now has " + state1.MockSetUpMessages.Count + " items ....");
 
             return typeof(TMockActor);
+        }
+
+        public ActorReceives<T> ItShouldDo(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>> operation)
+        {
+            Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(operation));
+            return this;
         }
     }
 

@@ -1,7 +1,7 @@
 using Akka.Actor;
 using System;
 
-namespace AkkaPingPong.ASLTestKit
+namespace AkkaPingPong.ASLTestKit.Models
 {
     public class InjectedActors
     {

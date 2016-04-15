@@ -1,27 +1,24 @@
-﻿using System;
-using Akka.Actor;
-using Akka.TestKit.NUnit;
+﻿using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
-using AkkaPingPong.ASLTestKit;
+using AkkaPingPong.AkkaTestBase;
 using AkkaPingPong.ASLTestKit.Mocks;
 using Autofac;
 using FakeItEasy;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace AkkaPingPong.TDDSample
 {
     /// <summary>
     /// Pass
     /// </summary>
-    [TestFixture]
-    public class When_an_email_request_comes_in_9_5 : TestKit
+
+    public class When_an_email_request_comes_in_9_5 : TestKitTestBase
     {
-        [Test]
+        [Fact]
         public void it_should_send_it_out()
         {
             //Arrange
-            var container = new ContainerBuilder().Build();
-            var mockFactory=new AkkaMockFactory(container,Sys);
 
             const string emailAddress = "test@test.com";
             var fakeEmailSender = A.Fake<IEmailSender>();
@@ -35,17 +32,17 @@ namespace AkkaPingPong.TDDSample
                  .WhenActorReceive<SendEmailMessage>()
                 .ItShouldTellSender(new EmailReadyToSendMessage(emailAddress))
                 .WhenActorReceive<SendEmailMessage>()
-                .ItShouldForwardItToChildActor(typeof(EmailActor),new SendEmailMessage(emailAddress))
+                .ItShouldForwardItToChildActor(typeof(EmailActor), new SendEmailMessage(emailAddress))
                 .CreateMockActor<MockActor<EmailActor>>();
 
             //Act
             mockFactory.LocateActor(typeof(MockActor<>)).Tell(new SendEmailMessage(emailAddress));
-          // mockFactory.JustWait();
+            // mockFactory.JustWait();
             //Assert
             AwaitAssert(() => ExpectMsg<EmailReadyToSendMessage>(message => message.EmailAddress == emailAddress), TimeSpan.FromMinutes(1));
             AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress), TimeSpan.FromMinutes(1));
 
-           A.CallTo(()=>fakeEmailSender.Send(emailAddress)).MustHaveHappened();
+            A.CallTo(() => fakeEmailSender.Send(emailAddress)).MustHaveHappened();
         }
 
         public interface IEmailSender
@@ -82,6 +79,7 @@ namespace AkkaPingPong.TDDSample
 
             public string EmailAddress { private set; get; }
         }
+
         public class EmailSentMessage
         {
             public EmailSentMessage(string emailAddress)
@@ -91,6 +89,7 @@ namespace AkkaPingPong.TDDSample
 
             public string EmailAddress { private set; get; }
         }
+
         public class EmailSupervisorActor<TEmailActor> : ReceiveActor where TEmailActor : ActorBase
         {
             public EmailSupervisorActor()
@@ -98,13 +97,14 @@ namespace AkkaPingPong.TDDSample
                 MailActor = Context.System.CreateActor<TEmailActor>();
                 Receive<SendEmailMessage>(message =>
                 {
-                    MailActor.Tell(message, Sender);
+                    MailActor.Forward(message);
                     Sender.Tell(new EmailReadyToSendMessage(message.EmailAddress));
                 });
             }
 
             private IActorRef MailActor { get; set; }
         }
+
         public class EmailActor : ReceiveActor
         {
             public EmailActor(IEmailSender emailSender)

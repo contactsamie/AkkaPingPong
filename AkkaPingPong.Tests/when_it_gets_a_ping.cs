@@ -1,74 +1,98 @@
-﻿using Akka.TestKit.TestActors;
-using AkkaPingPong.ActorSystemLib;
+﻿using AkkaPingPong.AkkaTestBase;
+using AkkaPingPong.ASLTestKit.Mocks;
+using AkkaPingPong.Common;
 using AkkaPingPong.Core.Actors;
 using AkkaPingPong.Core.Messages;
-using NUnit.Framework;
+using Autofac;
 using System;
-using AkkaPingPong.ASLTestKit;
-using AkkaPingPong.ASLTestKit.Mocks;
+using Xunit;
 
+//[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace AkkaPingPong.Tests
 {
-    [TestFixture]
-    public class when_it_gets_a_ping : AkkaTestBase.AkkaTestBase
+    public class when_it_gets_a_ping : TestKitTestBase
     {
-        [Test]
+        [Fact]
         public void it_should_do_a_pong()
         {
             //Arrange
-            ActorSystem.CreateActor<PingPongActor<MockActor>>();
+            //  var container = new ContainerBuilder().Build();
+            // mockFactory = new AkkaMockFactory(container, Sys);
+            mockFactory.UpdateContainer((builder) =>
+            {
+                builder.Register<IPingPongService>(b => new FakePingPongService());
+            });
+            mockFactory.CreateActor<PingPongActor<MockActor>>();
 
             //Act
-            ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+            mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
 
             //Assert
             AwaitAssert(() => ExpectMsg<PingMessageCompleted>(), TimeSpan.FromSeconds(5));
         }
 
-        [Test]
+        [Fact]
         public void it_should_do_a_pong_integration()
         {
             //Arrange
-            ActorSystem.CreateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>();
+            //var container = new ContainerBuilder().Build();
+            // mockFactory = new AkkaMockFactory(container, Sys);
+            mockFactory.UpdateContainer((builder) =>
+            {
+                builder.Register<IPingPongService>(b => new FakePingPongService());
+            });
+            mockFactory.CreateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>();
 
             //Act
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
-                ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+                mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
 
             //Assert
-            AwaitAssert(() => Subscriber.ExpectMsg<PongMessage>(), TimeSpan.FromSeconds(20));
+            AwaitAssert(() => ExpectMsg<PongMessage>(), TimeSpan.FromSeconds(20));
         }
 
-        [Test]
+        [Fact]
         public void it_should_do_a_pong_unit1()
         {
+            // var container = new ContainerBuilder().Build();
+            //  mockFactory = new AkkaMockFactory(container, Sys);
+            mockFactory.UpdateContainer((builder) =>
+            {
+                builder.Register<IPingPongService>(b => new FakePingPongService());
+            });
             //Arrange
-            ActorSystem.CreateActor<PingPongActor<MockActor>>();
+            mockFactory.CreateActor<PingPongActor<MockActor>>();
 
             //Act
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
 
-                ActorSystem.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+                mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
 
             //Assert
             AwaitAssert(() => ExpectMsg<PingMessageCompleted>(), TimeSpan.FromSeconds(20));
         }
 
-        [Test]
+        [Fact]
         public void it_should_do_a_pong_unit2()
         {
+            // var container = new ContainerBuilder().Build();
+            //  mockFactory = new AkkaMockFactory(container, Sys);
+            mockFactory.UpdateContainer((builder) =>
+            {
+                builder.Register<IPingPongService>(b => new FakePingPongService());
+            });
             //Arrange
-            ActorSystem.CreateActor<PingCoordinatorActor<MockActor1, MockActor2>>();
+            mockFactory.CreateActor<PingCoordinatorActor<MockActor1, MockActor2>>();
 
             //Act
-            ActorSystem.LocateActor(typeof(PingCoordinatorActor<,>)).Tell(new PingMessage());
+            mockFactory.LocateActor(typeof(PingCoordinatorActor<,>)).Tell(new PingMessage());
 
             //Assert
             AwaitAssert(() => ExpectMsg<SorryImStashing>(), TimeSpan.FromSeconds(20));

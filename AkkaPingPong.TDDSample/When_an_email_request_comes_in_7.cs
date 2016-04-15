@@ -1,30 +1,40 @@
 ﻿using Akka.Actor;
-using Akka.TestKit.NUnit;
-using AkkaPingPong.ActorSystemLib;
+using AkkaPingPong.AkkaTestBase;
 using Autofac;
-using NUnit.Framework;
+using System;
+using Xunit;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace AkkaPingPong.TDDSample
 {
     /// <summary>
-    /// Timeout 00:00:03 while waiting for a message of type AkkaPingPong.Tests.TDD_Sample.When_an_email_request_comes_in_7+EmailSentMessage 
+    /// Timeout 00:00:03 while waiting for a message of type AkkaPingPong.Tests.TDD_Sample.When_an_email_request_comes_in_7+EmailSentMessage
     /// </summary>
-    [TestFixture]
-    public class When_an_email_request_comes_in_7 :TestKit
+
+    public class When_an_email_request_comes_in_7 : TestKitTestBase
     {
-        [Test]
-        [ExpectedException]
+        [Fact]
+        // [ExpectedException]
         public void it_should_send_it_out()
         {
             //Arrange
-            ApplicationActorSystem.Register(new ContainerBuilder().Build(), (builder)=>builder.Register((r)=>new TestEmailSender()).As<IEmailSender>(), Sys);
-            ApplicationActorSystem.ActorSystem.CreateActor<EmailSupervisorActor<EmailActor>>();
+            mockFactory.UpdateContainer((builder) => builder.Register((r) => new TestEmailSender()).As<IEmailSender>());
+            mockFactory.CreateActor<EmailSupervisorActor<EmailActor>>();
             var emailAddress = "test@test.com";
             //Act
-            ApplicationActorSystem.ActorSystem.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
+            mockFactory.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
             //Assert
-            AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
-            Assert.IsTrue(TestEmailSender.HasSentEmail);
+            try
+            {
+                AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
+                Assert.IsTrue(TestEmailSender.HasSentEmail);
+                throw new Exception();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public interface IEmailSender
@@ -64,8 +74,8 @@ namespace AkkaPingPong.TDDSample
 
         public class EmailSupervisorActor<TEmailActor> : ReceiveActor
         {
-            
         }
+
         public class EmailActor : ReceiveActor
         {
             public EmailActor(IEmailSender emailSender)

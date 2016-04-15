@@ -4,15 +4,14 @@ using Akka.DI.Core;
 using Autofac;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace AkkaPingPong.ActorSystemLib
 {
-    public class ApplicationActorSystem
+    public class ApplicationActorSystem : IDisposable
     {
-        public static ActorSystem ActorSystem { get; set; }
+        public ActorSystem ActorSystem { get; set; }
 
-        public static void Register(IContainer container, Action<ContainerBuilder> postBuildOperation = null, ActorSystem actorSystem = null)
+        public void Register(IContainer container, Action<ContainerBuilder> postBuildOperation = null, ActorSystem actorSystem = null)
         {
             if (container == null) throw new ArgumentNullException(nameof(container));
             ActorSystem = actorSystem ?? ActorSystem.Create(typeof(ApplicationActorSystem).Name);
@@ -39,9 +38,18 @@ namespace AkkaPingPong.ActorSystemLib
             IDependencyResolver resolver = new AutoFacDependencyResolver(container, ActorSystem);
         }
 
-        public static void ShutDownActorSystem()
+        public void ShutDownActorSystem()
         {
-            Task.WaitAll(ActorSystem != null ? ActorSystem.Terminate() : Task.FromResult(true));
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            var name = ActorSystem.Name;
+            ActorSystem.Terminate();
+            ActorSystem.WhenTerminated.Wait();
+            ActorSystem.Dispose();
+            Console.WriteLine("ActorSystem terminated at " + DateTime.UtcNow + " : " + name);
         }
     }
 }

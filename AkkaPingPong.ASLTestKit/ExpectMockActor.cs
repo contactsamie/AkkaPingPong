@@ -1,6 +1,7 @@
 using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.ASLTestKit.Messages;
+using AkkaPingPong.ASLTestKit.Mocks;
 using Autofac;
 using System;
 using System.Collections.Generic;
@@ -141,9 +142,19 @@ namespace AkkaPingPong.ASLTestKit
 
         protected async Task<List<T>> GetAllReceivecMessagesOfType<T>(ActorSelection actorSelection) where T : class
         {
-            var messages = await actorSelection.Ask(new GetAllPreviousMessagesReceivedByMockActor(), TimeSpan.FromSeconds(5));
-            var m = messages as Dictionary<Guid, object>;
-            return m?.Where(x => x.Value is T).Select(x => x.Value as T).ToList() ?? new List<T>();
+            var t = typeof(T);
+            var path = actorSelection.ToActorMetaData().Path;
+            var mockMessagesQueryActorSelection = ActorSystem.LocateActor<MockMessagesQueryActor>();
+            var messages = await mockMessagesQueryActorSelection.Ask(new GetAllPreviousMessagesReceivedByMockActor(), TimeSpan.FromSeconds(5));
+            var m = messages as Dictionary<Guid, MockMessages>;
+            var matches = m?.Where(x =>
+             {
+                 var samePath = x.Value.ActorPath == path;
+                 var sameType = x.Value.Message == typeof(T);
+                 return samePath && sameType;
+             }) ?? new Dictionary<Guid, MockMessages>();
+            var result = matches.Select(x => x.Value.Message as T).ToList();
+            return result;
         }
 
         /// <summary>

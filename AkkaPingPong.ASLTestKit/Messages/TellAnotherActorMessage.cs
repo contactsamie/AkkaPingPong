@@ -1,14 +1,17 @@
-using System;
+using AkkaPingPong.ActorSystemLib;
 
 namespace AkkaPingPong.ASLTestKit.Messages
 {
-    public class ItTellAnotherActorMessage
+    public class TellAnotherActorMessage
     {
-        public ItTellAnotherActorMessage(Type actor)
+        public TellAnotherActorMessage(ActorMetaData actor, object message)
         {
             Actor = actor;
+            Message = message;
         }
 
-        public Type Actor { private set; get; }
+        public ActorMetaData Actor { private set; get; }
+
+        public object Message { get; private set; }
     }
 }

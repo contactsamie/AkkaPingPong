@@ -1,30 +1,37 @@
 ﻿using Akka.Actor;
-using Akka.TestKit.NUnit;
-using AkkaPingPong.ActorSystemLib;
-using Autofac;
-using NUnit.Framework;
+using AkkaPingPong.AkkaTestBase;
+using System;
+using Xunit;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace AkkaPingPong.TDDSample
 {
     /// <summary>
     /// Expected: True But was:  False
     /// </summary>
-    [TestFixture]
-    public class When_an_email_request_comes_in_5 : TestKit
+
+    public class When_an_email_request_comes_in_5 : TestKitTestBase
     {
-        [Test]
-        [ExpectedException]
+        [Fact]
+        // [ExpectedException]
         public void it_should_send_it_out()
         {
             //Arrange
-            ApplicationActorSystem.Register(new ContainerBuilder().Build(), null, Sys);
-            ApplicationActorSystem.ActorSystem.CreateActor<EmailActor>();
+
+            mockFactory.CreateActor<EmailActor>();
             var emailAddress = "test@test.com";
             //Act
-            ApplicationActorSystem.ActorSystem.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage(emailAddress));
+            mockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage(emailAddress));
             //Assert
-            AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
-            Assert.IsTrue(TestEmailSender.HasSentEmail);
+            try
+            {
+                AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
+                Assert.IsTrue(TestEmailSender.HasSentEmail);
+                throw new Exception();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public interface IEmailSender

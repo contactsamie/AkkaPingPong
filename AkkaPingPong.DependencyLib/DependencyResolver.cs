@@ -5,7 +5,7 @@ using System;
 
 namespace AkkaPingPong.DependencyLib
 {
-    public class DependencyResolver:IDisposable
+    public class DependencyResolver : IDisposable
     {
         private static Autofac.IContainer Container { set; get; }
 

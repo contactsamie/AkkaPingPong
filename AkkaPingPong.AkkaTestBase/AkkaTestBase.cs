@@ -1,66 +1,23 @@
-﻿using System;
-using Akka.Actor;
-using Akka.TestKit;
-using Akka.TestKit.NUnit;
-using Akka.TestKit.TestActors;
-
-using AkkaPingPong.Common;
-using AkkaPingPong.Core;
-using AkkaPingPong.DependencyLib;
+﻿using Akka.TestKit.Xunit2;
+using AkkaPingPong.ASLTestKit;
 using Autofac;
-using Autofac.Core;
-using NUnit.Framework;
+using System;
 
 namespace AkkaPingPong.AkkaTestBase
 {
-    public abstract class AkkaTestBase : TestKit
+    public abstract class TestKitTestBase : TestKit, IDisposable
     {
-      
+        public AkkaMockFactory mockFactory { set; get; }
 
-        public TestProbe Subscriber { set; get; }
-
-        public IActorSystemFactory ActorSystemfactory { set; get; }
-
-        public ActorSystem ActorSystem { set; get; }
-
-        [SetUp]
-        public void SetUp()
+        public TestKitTestBase()
         {
-            var preBuilder = new ContainerBuilder();
-            preBuilder.Register(x => new FakeActorSystemFactory()).As<IActorSystemFactory>().SingleInstance();
-            preBuilder.Update(DependencyResolver.GetContainer());
-
-            ActorSystemfactory = DependencyResolver.GetContainer().Resolve<IActorSystemFactory>();
-
-            ActorSystemfactory.Register(DependencyResolver.GetContainer(), (builder) =>
-            {
-                builder.Register<IPingPongService>(b => new  FakePingPongService());
-            }, Sys);
-
-            //just to reduce typing
-            ActorSystem = ActorSystemfactory.ActorSystem;
-
-            Subscriber = CreateTestProbe();
-            Sys.EventStream.Subscribe(Subscriber.Ref, typeof(object));
+            mockFactory = new AkkaMockFactory(new ContainerBuilder().Build(), Sys);
         }
 
-        [TearDown]
-        protected void TearDown()
+        protected override void Dispose(bool disposing)
         {
-            ActorSystemfactory.ShutDownActorSystem();
+            mockFactory.Dispose();
+            base.Dispose(disposing);
         }
-
-        public void JustWait(int durationMilliseconds = 600000)
-        {
-            var now = DateTime.Now;
-            var counter = 0;
-            while ((DateTime.Now - now).TotalMilliseconds < durationMilliseconds)
-            {
-                System.Threading.Thread.Sleep(10 * counter);
-                counter++;
-            }
-        }
-      
-
     }
 }

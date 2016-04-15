@@ -1,5 +1,6 @@
-﻿using System;
+﻿using AkkaPingPong.ASLTestKit.Models;
 using AkkaPingPong.ASLTestKit.State;
+using System;
 
 namespace AkkaPingPong.ASLTestKit.Mocks
 

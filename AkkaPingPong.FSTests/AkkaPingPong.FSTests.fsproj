@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,6 +13,8 @@
     <Name>FShapUnitTest</Name>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,8 +77,8 @@
       <HintPath>..\packages\Akka.TestKit.1.0.7\lib\net45\Akka.TestKit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Akka.TestKit.NUnit">
-      <HintPath>..\packages\Akka.TestKit.NUnit.1.0.7\lib\net45\Akka.TestKit.NUnit.dll</HintPath>
+    <Reference Include="Akka.TestKit.Xunit2">
+      <HintPath>..\packages\Akka.TestKit.Xunit2.1.0.7\lib\net45\Akka.TestKit.Xunit2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Autofac">
@@ -87,7 +90,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FsUnit.NUnit">
-      <HintPath>..\packages\FsUnit.1.4.1.0\lib\net45\FsUnit.NUnit.dll</HintPath>
+      <HintPath>..\packages\FsUnit.2.1.0\lib\net45\FsUnit.NUnit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
@@ -97,15 +100,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NHamcrest">
-      <HintPath>..\packages\FsUnit.1.4.1.0\lib\net45\NHamcrest.dll</HintPath>
+      <HintPath>..\packages\FsUnit.2.1.0\lib\net45\NHamcrest.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.2.3\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -115,6 +114,22 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="xunit.abstractions">
+      <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.assert">
+      <HintPath>..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.core">
+      <HintPath>..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="xunit.execution.desktop">
+      <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AkkaPingPong.ActorSystemLib\AkkaPingPong.ActorSystemLib.csproj">
@@ -132,12 +147,28 @@
       <Project>{633732c5-48c1-4c07-a0c1-ef37893d92a7}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.Common\AkkaPingPong.Common.csproj">
+      <Name>AkkaPingPong.Common</Name>
+      <Project>{01c7598f-564f-43e0-8d27-fc2979295830}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\AkkaPingPong.Core\AkkaPingPong.Core.csproj">
       <Name>AkkaPingPong.Core</Name>
       <Project>{c2dab73c-884d-435b-849d-a0bd1def0cb6}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\AkkaPingPong.DependencyLib\AkkaPingPong.DependencyLib.csproj">
+      <Name>AkkaPingPong.DependencyLib</Name>
+      <Project>{8281d78f-13ee-4f61-8ed2-8a6a90c35dea}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

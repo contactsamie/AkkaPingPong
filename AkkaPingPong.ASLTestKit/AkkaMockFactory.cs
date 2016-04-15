@@ -1,14 +1,14 @@
 using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
-using AkkaPingPong.AkkaTestBase;
 using AkkaPingPong.ASLTestKit.Messages;
+using AkkaPingPong.ASLTestKit.Mocks;
 using AkkaPingPong.Core;
 using Autofac;
 using System;
 
 namespace AkkaPingPong.ASLTestKit
 {
-    public class AkkaMockFactory : IDisposable
+    public class AkkaMockFactory
     {
         public AkkaMockFactory(IContainer container, ActorSystem actorSystem)
         {
@@ -19,6 +19,9 @@ namespace AkkaPingPong.ASLTestKit
             preBuilder.Update(Container);
             ActorSystemfactory = Container.Resolve<IActorSystemFactory>();
             ActorSystemfactory.Register(Container, (builder) => { }, ActorSystem);
+            ActorSystem.CreateActor<MockMessagesQueryActor>();
+            var init = ActorSystem.LocateActor(typeof(MockMessagesQueryActor))
+                  .Ask(new GetAllPreviousMessagesReceivedByMockActor()).Result;
         }
 
         public IActorRef CreateActor<T>(ActorSetUpOptions option = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
@@ -36,6 +39,11 @@ namespace AkkaPingPong.ASLTestKit
         public ActorReceives<MockActorInitializationMessage> WhenActorInitializes()
         {
             return new ActorReceives<MockActorInitializationMessage>(Container, ActorSystem);
+        }
+
+        public ActorSelection LocateActor<T>(ActorMetaData parentActorMetaData = null)
+        {
+            return SelectableActor.Select(typeof(T), parentActorMetaData, ActorSystem);
         }
 
         public ActorSelection LocateActor(Type type, ActorMetaData parentActorMetaData = null)
@@ -66,11 +74,9 @@ namespace AkkaPingPong.ASLTestKit
 
         public void Dispose()
         {
-            var name = ActorSystem.Name;
-            ActorSystem.Terminate();
-            ActorSystem.WhenTerminated.Wait();
+            ActorSystemfactory.ShutDownActorSystem();
+
             Container.Dispose();
-            Console.WriteLine("ActorSystem terminated at " + DateTime.UtcNow + " : " + name);
         }
 
         public void JustWait(int durationMilliseconds = 600000)

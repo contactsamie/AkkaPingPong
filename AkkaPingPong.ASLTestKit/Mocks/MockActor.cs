@@ -1,61 +1,131 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Akka.Actor;
 using Akka.DI.Core;
 using AkkaPingPong.ActorSystemLib;
 using AkkaPingPong.ASLTestKit.Messages;
+using AkkaPingPong.ASLTestKit.Models;
 using AkkaPingPong.ASLTestKit.State;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AkkaPingPong.ASLTestKit.Mocks
 {
-    public abstract class MockActorBase : StatefullReceiveActor<MockActorState>
+    public class MockMessages
     {
-        private Dictionary<Guid, object> ReceivedMessages { set; get; }
-        protected Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors { set; get; }
-
-        protected MockActorBase(IMockActorState state)
+        public MockMessages(string actorPath, Type message)
         {
-            ReceivedMessages = new Dictionary<Guid, object>();
-            SetState(state as MockActorState);
+            Message = message;
+            ActorPath = actorPath;
+        }
 
+        public string ActorPath { private set; get; }
+
+        public Type Message { private set; get; }
+    }
+
+    public class MockMessagesQueryActor : ReceiveActor
+    {
+        private Dictionary<Guid, MockMessages> ReceivedMessages { set; get; }
+
+        public MockMessagesQueryActor()
+        {
+            ReceivedMessages = new Dictionary<Guid, MockMessages>();
             Receive<GetAllPreviousMessagesReceivedByMockActor>(message =>
             {
                 Console.WriteLine(GetType().Name + " Responding to request  for all received messages totaling :  " + ReceivedMessages.Count);
                 Sender.Tell(ReceivedMessages);
             });
+            Receive<MockMessages>((message) =>
+            {
+                Console.WriteLine(GetType().Name + ">>>>>>>> Receiving message from  " + message.ActorPath + " : > " + message.Message);
+
+                ReceivedMessages.Add(Guid.NewGuid(), message);
+            });
+        }
+    }
+
+    public abstract class MockActorBase : StatefullReceiveActor<MockActorState>
+    {
+        protected Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors { set; get; }
+        private ActorSelection MockMessagesQueryActorSelection { set; get; }
+
+        protected MockActorBase(IMockActorState state)
+        {
+            MockMessagesQueryActorSelection = Context.System.LocateActor<MockMessagesQueryActor>();
+
+            WriteLine(GetType().Name + " HAS STARTED RUNNING ....");
+
+            SetState(state as MockActorState);
 
             ReceiveAny(message =>
             {
-                Console.WriteLine(GetType().Name + " Receiving message " + message);
-
-                ReceivedMessages.Add(Guid.NewGuid(), message);
-
-                var myState = GetState();
-                var results =
-                    myState.MockSetUpMessages.Where(s => s.WhenInComing == message.GetType() && s.Owner == GetType()).ToList();
-
-                foreach (var response in results)
+                try
                 {
-                    if (response == null) return;
-                    HandleMessage(response.RespondWith, response);
-                    Console.WriteLine(GetType().Name + " Receiving message .... Process " + response.RespondWith + " for message " + response);
+                    WriteLine(GetType().Name + " Receiving message " + message);
+
+                    //   MockMessagesQueryActorSelection.Tell(new MockMessages(Context.Self.ToActorMetaData().Path,message));
+                    var myState = GetState();
+                    var results =
+                        myState.MockSetUpMessages.Where(s => s.WhenInComing == message.GetType() && s.Owner == GetType()).ToList();
+
+                    foreach (var response in results)
+                    {
+                        if (response == null) return;
+
+                        MockMessagesQueryActorSelection.Tell(new MockMessages(Context.Self.ToActorMetaData().Path, response.WhenInComing));
+
+                        HandleMessage(response.RespondWith, response);
+                        //  WriteLine(GetType().Name + " Receiving message .... Process " + response.RespondWith + " for message " + response);
+                    }
+                }
+                catch (Exception e)
+                {
+                    WriteLine("Exception has been thrown inside Receive of  " + GetType().Name + " : " + e.Message);
+                    throw e;
                 }
             });
         }
 
+        private void WriteLine(string message)
+        {
+            Console.WriteLine("<<<<<Message From :    " + GetType().Name);
+
+            // Console.WriteLine("__________________________________________________________");
+            Console.WriteLine(message);
+        }
+
         protected void Initialize()
         {
-            Console.WriteLine(GetType().Name + " Initializing ....");
-            var result = GetState().MockSetUpMessages.Where(s => s.WhenInComing == typeof(MockActorInitializationMessage) && s.Owner == GetType()).ToList();
-            if (!result.Any()) return;
-
-            foreach (var response in result)
+            try
             {
-                if (response == null) return;
-                HandleMessage(response.RespondWith, response);
-                Console.WriteLine(GetType().Name + " Initializing ....Process " + response.RespondWith + " for message " + response);
+                WriteLine(GetType().Name + " Initializing ....");
+                var result = GetState().MockSetUpMessages.Where(s => s.WhenInComing == typeof(MockActorInitializationMessage) && s.Owner == GetType()).ToList();
+                if (!result.Any()) return;
+
+                foreach (var response in result)
+                {
+                    if (response == null) return;
+                    HandleMessage(response.RespondWith, response);
+                    WriteLine(GetType().Name + " Initializing ....Process " + response.RespondWith + " for message " + response);
+                }
             }
+            catch (Exception e)
+            {
+                WriteLine("Exception has been thrown during initialization of  " + GetType().Name + " : " + e.Message);
+                throw e;
+            }
+        }
+
+        private bool ExecuteLambda(object response, object message)
+        {
+            bool handled = false;
+            if (response is ItShouldExecuteLambda)
+            {
+                handled = true;
+                var forwarding = response as ItShouldExecuteLambda;
+                forwarding.Operation(Context, InjectedActors);
+            }
+            return handled;
         }
 
         private void HandleMessage(object response, object message)
@@ -73,6 +143,8 @@ namespace AkkaPingPong.ASLTestKit.Mocks
                 handled = HandleTellChildActorTypeMessage(response, message);
             if (!handled)
                 handled = HandleMockCreateChildActor(response);
+            if (!handled)
+                handled = ExecuteLambda(response, message);
 
             if (!handled && Sender != null)
             {
