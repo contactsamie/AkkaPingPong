@@ -62,8 +62,8 @@ namespace AkkaPingPong.ActorSystemLib
             return CurrentState;
         }
 
-        private  T PreviousState { set; get; }
-        private  T CurrentState { set; get; }
+        private T PreviousState { set; get; }
+        private T CurrentState { set; get; }
 
         public readonly ILoggingAdapter Logger = Context.GetLogger();
 

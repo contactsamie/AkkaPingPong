@@ -1,13 +1,11 @@
 using Akka.Actor;
 using AkkaPingPong.ActorSystemLib;
-using AkkaPingPong.ASLTestKit.Messages;
 using AkkaPingPong.ASLTestKit.Mocks;
 using Autofac;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace AkkaPingPong.ASLTestKit
 {
@@ -19,6 +17,7 @@ namespace AkkaPingPong.ASLTestKit
         private ActorMetaData ParentActor { set; get; }
         private ActorMetaData ActorMetaData { set; get; }
         private ConcurrentDictionary<Guid, MockMessages> MessagesReceived { get; }
+
         public ExpectMockActor(ConcurrentDictionary<Guid, MockMessages> messagesReceived, Type actorType, IContainer container, ActorSystem actorSystem)
         {
             MessagesReceived = messagesReceived;
@@ -49,7 +48,7 @@ namespace AkkaPingPong.ASLTestKit
             return ToHaveReceivedMessage<T>(null, maxWaitMilliseconds);
         }
 
-        public List<T> ToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds =10000) where T : class
+        public List<T> ToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds = 10000) where T : class
         {
             return AssertAwait(() =>
             {
@@ -77,7 +76,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 List<T> messages;
                 messages = GetAllReceivecMessagesOfType<T>(ActorMetaData == null ? ActorSystem.LocateActor(ActorType, ParentActor) : ActorSystem.LocateActor(ActorMetaData));
-
 
                 if (!PassedValidation(messageValidator, messages))
                 {
@@ -118,7 +116,7 @@ namespace AkkaPingPong.ASLTestKit
             return result;
         }
 
-        private  bool PassedValidation<T>(Func<T, bool> messageValidator, List<T> messages) where T : class
+        private bool PassedValidation<T>(Func<T, bool> messageValidator, List<T> messages) where T : class
         {
             Func<T, bool> defaultValidator = (t) => true;
             messageValidator = messageValidator ?? defaultValidator;
@@ -132,22 +130,20 @@ namespace AkkaPingPong.ASLTestKit
 
         protected List<T> GetAllReceivecMessagesOfType<T>(ActorSelection actorSelection) where T : class
         {
-           
-                var meta = actorSelection.ToActorMetaData();
-                var path = meta?.Path;
+            var meta = actorSelection.ToActorMetaData();
+            var path = meta?.Path;
 
-                var messages = MessagesReceived;
-                var m = messages;
-                var matches = m?.Where(x =>
-                {
-                    var hasPath = path != null;
-                    var samePath = x.Value.ActorPath == path;
-                    var sameType = x.Value.Message == typeof(T);
-                    return hasPath && samePath && sameType;
-                }) ?? new Dictionary<Guid, MockMessages>();
-                var result = matches.Select(x => x.Value.Message as T).ToList();
-                return result;
-        
+            var messages = MessagesReceived;
+            var m = messages;
+            var matches = m?.Where(x =>
+            {
+                var hasPath = path != null;
+                var samePath = x.Value.ActorPath == path;
+                var sameType = x.Value.Message == typeof(T);
+                return hasPath && samePath && sameType;
+            }) ?? new Dictionary<Guid, MockMessages>();
+            var result = matches.Select(x => x.Value.Message as T).ToList();
+            return result;
         }
 
         /// <summary>

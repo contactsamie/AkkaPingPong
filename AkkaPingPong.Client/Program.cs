@@ -12,7 +12,7 @@ namespace AkkaPingPong.Client
     {
         private static void Main(string[] args)
         {
-            var container =new  DependencyResolver().GetContainer();
+            var container = new DependencyResolver().GetContainer();
             var actorSystemfactory = container.Resolve<IActorSystemFactory>();
             actorSystemfactory.Register(container);
 

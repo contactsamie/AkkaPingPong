@@ -34,7 +34,7 @@ namespace AkkaPingPong.ActorSystemLib
 
         public static ActorMetaData ActorMetaDataByName(string actorName, ActorMetaData parentActorMetaData = null)
         {
-            return new ActorMetaData(actorName, parentActorMetaData?? new ActorMetaData("user"));
+            return new ActorMetaData(actorName, parentActorMetaData ?? new ActorMetaData("user"));
         }
 
         public static ActorSelection Select(Type type, ActorMetaData parentActorMetaData, ActorSystem actorSystem)

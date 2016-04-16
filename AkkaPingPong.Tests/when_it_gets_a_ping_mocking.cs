@@ -39,7 +39,7 @@ namespace AkkaPingPong.Tests
                 .CreateMockActorRef<MockActor<MockActor1, MockActor2, MockActor3, MockActor4>>();
 
             //Act
-           // mockActor.Tell(new PingMessage1());
+            // mockActor.Tell(new PingMessage1());
             mockActor.Tell(new PingMessage2());
             mockActor.Tell(new PingMessage3());
             mockActor.Tell(new PingMessage4());
@@ -49,7 +49,6 @@ namespace AkkaPingPong.Tests
             MockFactory.ExpectMockActor(mockActor3).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage3>();
             MockFactory.ExpectMockActor(mockActor4).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage4>();
         }
-
 
         [Fact]
         public void can_send_to_all_child_actors_2()
@@ -80,7 +79,7 @@ namespace AkkaPingPong.Tests
 
             //Act
             mockActor.Tell(new PingMessage1());
-           // mockActor.Tell(new PingMessage2());
+            // mockActor.Tell(new PingMessage2());
             mockActor.Tell(new PingMessage3());
             mockActor.Tell(new PingMessage4());
 
@@ -89,7 +88,6 @@ namespace AkkaPingPong.Tests
             MockFactory.ExpectMockActor(mockActor3).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage3>();
             MockFactory.ExpectMockActor(mockActor4).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage4>();
         }
-
 
         [Fact]
         public void can_send_to_all_child_actors_3()
@@ -121,7 +119,7 @@ namespace AkkaPingPong.Tests
             //Act
             mockActor.Tell(new PingMessage1());
             mockActor.Tell(new PingMessage2());
-           // mockActor.Tell(new PingMessage3());
+            // mockActor.Tell(new PingMessage3());
             mockActor.Tell(new PingMessage4());
 
             MockFactory.ExpectMockActor(mockActor1).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage1>();
@@ -129,7 +127,6 @@ namespace AkkaPingPong.Tests
             MockFactory.ExpectMockActor(mockActor3).WhoseParentIs(mockActor).NotToHaveReceivedMessage<PingMessage3>();
             MockFactory.ExpectMockActor(mockActor4).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage4>();
         }
-
 
         [Fact]
         public void can_send_to_all_child_actors_4()
@@ -162,46 +159,13 @@ namespace AkkaPingPong.Tests
             mockActor.Tell(new PingMessage1());
             mockActor.Tell(new PingMessage2());
             mockActor.Tell(new PingMessage3());
-           // mockActor.Tell(new PingMessage4());
+            // mockActor.Tell(new PingMessage4());
 
             MockFactory.ExpectMockActor(mockActor1).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage1>();
             MockFactory.ExpectMockActor(mockActor2).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage2>();
             MockFactory.ExpectMockActor(mockActor3).WhoseParentIs(mockActor).ToHaveReceivedMessage<PingMessage3>();
             MockFactory.ExpectMockActor(mockActor4).WhoseParentIs(mockActor).NotToHaveReceivedMessage<PingMessage4>();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         [Fact]
         public void can_send_to_all_child_actors1()

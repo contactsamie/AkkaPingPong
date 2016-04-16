@@ -7,9 +7,9 @@ namespace AkkaPingPong.DependencyLib
 {
     public class DependencyResolver : IDisposable
     {
-        private  Autofac.IContainer Container { set; get; }
+        private Autofac.IContainer Container { set; get; }
 
-        public  IContainer GetContainer(Action<ContainerBuilder> builderFunc = null)
+        public IContainer GetContainer(Action<ContainerBuilder> builderFunc = null)
         {
             if (Container != null)
             {

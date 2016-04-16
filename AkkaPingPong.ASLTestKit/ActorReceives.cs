@@ -9,8 +9,6 @@ using Autofac;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AkkaPingPong.ASLTestKit
 {
@@ -88,25 +86,16 @@ namespace AkkaPingPong.ASLTestKit
         {
             return ItShouldDo((context, injectedActors) =>
             {
-               
-                     HandleChildActorType(childActorType, injectedActors, (actor) =>
-               {
-
-
-                  
-                           actor.ActorRef = CreateChildActor(context, actor.ActorType, options ?? new ActorSetUpOptions());
-                   
-
-    
-               });
-          
-               
+                HandleChildActorType(childActorType, injectedActors, (actor) =>
+          {
+              actor.ActorRef = CreateChildActor(context, actor.ActorType, options ?? new ActorSetUpOptions());
+          });
             });
             //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new MockCreateChildActorMessage(childActorType, options));
             //return this;
         }
 
-        private  IActorRef CreateChildActor(IUntypedActorContext Context, Type actorType, ActorSetUpOptions Options)
+        private IActorRef CreateChildActor(IUntypedActorContext Context, Type actorType, ActorSetUpOptions Options)
         {
             var props = Context.DI().Props(actorType);
 
@@ -147,7 +136,7 @@ namespace AkkaPingPong.ASLTestKit
             //return this;
         }
 
-        private  void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors, Action<InjectedActors> operation)
+        private void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors, Action<InjectedActors> operation)
         {
             if (InjectedActors == null) return;
             if (InjectedActors.Item1 != null && InjectedActors.Item1.ActorType == childActorType)
@@ -237,8 +226,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 MessagesReceived.GetOrAdd(Guid.NewGuid(),
                   new MockMessages(context.Self.ToActorMetaData().Path, typeof(T)));
-               
-
             });
 
             Console.WriteLine("Setting Up Actor " + typeof(TMockActor).Name + " with " + mocks.Count + " items ....");
