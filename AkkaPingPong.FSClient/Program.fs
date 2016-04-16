@@ -12,8 +12,9 @@ open System
 
    [<EntryPoint>]
    let main argv =
-       let container = DependencyResolver.GetContainer()
-       let  actorSystemfactory = DependencyResolver.GetContainer().Resolve<IActorSystemFactory>()
+       let resolver =new DependencyResolver()
+       let container =resolver.GetContainer()
+       let  actorSystemfactory = container.Resolve<IActorSystemFactory>()
        actorSystemfactory.Register(container)
        [1..10] |> List.iter
                             (fun (i)->

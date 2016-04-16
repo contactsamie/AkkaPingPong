@@ -106,7 +106,7 @@ namespace AkkaPingPong.ASLTestKit
             //return this;
         }
 
-        private static IActorRef CreateChildActor(IUntypedActorContext Context, Type actorType, ActorSetUpOptions Options)
+        private  IActorRef CreateChildActor(IUntypedActorContext Context, Type actorType, ActorSetUpOptions Options)
         {
             var props = Context.DI().Props(actorType);
 
@@ -147,7 +147,7 @@ namespace AkkaPingPong.ASLTestKit
             //return this;
         }
 
-        private static void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors, Action<InjectedActors> operation)
+        private  void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors, Action<InjectedActors> operation)
         {
             if (InjectedActors == null) return;
             if (InjectedActors.Item1 != null && InjectedActors.Item1.ActorType == childActorType)

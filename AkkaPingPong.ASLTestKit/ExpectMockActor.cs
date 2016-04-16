@@ -118,7 +118,7 @@ namespace AkkaPingPong.ASLTestKit
             return result;
         }
 
-        private static bool PassedValidation<T>(Func<T, bool> messageValidator, List<T> messages) where T : class
+        private  bool PassedValidation<T>(Func<T, bool> messageValidator, List<T> messages) where T : class
         {
             Func<T, bool> defaultValidator = (t) => true;
             messageValidator = messageValidator ?? defaultValidator;
