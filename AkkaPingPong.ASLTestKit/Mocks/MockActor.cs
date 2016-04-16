@@ -25,7 +25,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
             });
         }
 
-        protected void Initialize()
+        private void Initialize()
         {
             var result = GetState().MockSetUpMessages.Where(s => s.WhenInComing == typeof(MockActorInitializationMessage) && s.Owner == GetType()).ToList();
 
@@ -60,6 +60,11 @@ namespace AkkaPingPong.ASLTestKit.Mocks
                 forwarding.Operation(Context, InjectedActors);
             }
             return handled;
+        }
+
+        protected override void PreStart()
+        {
+            Initialize();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
     {
         public MockActor(IMockActorState state) : base(state)
         {
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -18,7 +18,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, new InjectedActors() { ActorType = typeof(TMockActor4) });
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -27,7 +27,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -36,7 +36,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -45,7 +45,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, null, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -53,7 +53,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
     {
         public MockActor4(IMockActorState state) : base(state)
         {
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -62,7 +62,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor3(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, new InjectedActors() { ActorType = typeof(TMockActor4) });
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -71,7 +71,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor3(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -80,7 +80,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor3(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -89,7 +89,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor3(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, null, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -97,7 +97,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
     {
         public MockActor3(IMockActorState state) : base(state)
         {
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -106,7 +106,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor2(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, new InjectedActors() { ActorType = typeof(TMockActor4) });
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -115,7 +115,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor2(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -124,7 +124,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor2(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -133,7 +133,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor2(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, null, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -141,7 +141,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
     {
         public MockActor2(IMockActorState state) : base(state)
         {
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -150,7 +150,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor1(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, new InjectedActors() { ActorType = typeof(TMockActor4) });
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -159,7 +159,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor1(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -168,7 +168,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor1(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -177,7 +177,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActor1(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, null, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -185,7 +185,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
     {
         public MockActor1(IMockActorState state) : base(state)
         {
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -194,7 +194,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActorBase(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, new InjectedActors() { ActorType = typeof(TMockActor4) });
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -203,7 +203,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActorBase(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, new InjectedActors() { ActorType = typeof(TMockActor3) }, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -212,7 +212,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActorBase(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, new InjectedActors() { ActorType = typeof(TMockActor2) }, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 
@@ -221,7 +221,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
         public MockActorBase(IMockActorState state) : base(state)
         {
             InjectedActors = new Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>(new InjectedActors() { ActorType = typeof(TMockActor) }, null, null, null);
-            Initialize();
+            //Initialize();
         }
     }
 }

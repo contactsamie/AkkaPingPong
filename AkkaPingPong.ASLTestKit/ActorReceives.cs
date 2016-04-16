@@ -41,11 +41,7 @@ namespace AkkaPingPong.ASLTestKit
             return new ActorReceives<MockActorInitializationMessage>(MessagesReceived, Container, ActorSystem, Mocks);
         }
 
-        //public ActorReceives<T> ExceptionShouldBeThrown(Exception exception = null)
-        //{
-        //    Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new MockThrowExceptionMessage(exception));
-        //    return this;
-        //}
+       
 
         public ActorReceives<T> ItShouldTellAnotherActor<TA>(object message, ActorMetaData parent = null)
         {
@@ -53,8 +49,7 @@ namespace AkkaPingPong.ASLTestKit
             {
                 context.System.LocateActor(typeof(TA), parent).Tell(message);
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(typeof(TA), message, parent));
-            //return this;
+           
         }
 
         public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, object message, ActorSelection parent = null)
@@ -63,8 +58,7 @@ namespace AkkaPingPong.ASLTestKit
             {
                 context.System.LocateActor(actorType, parent).Tell(message);
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(actorType, message, parent?.ToActorMetaData()));
-            //return this;
+  
         }
 
         public ActorReceives<T> ItShouldTellAnotherActor(IActorRef actorRef, object message = null)
@@ -73,8 +67,7 @@ namespace AkkaPingPong.ASLTestKit
             {
                 actorRef.Tell(message);
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherRefActorMessage(actorRef, message));
-            //return this;
+            
         }
 
         public ActorReceives<T> ItShouldDoNothing()
@@ -91,36 +84,26 @@ namespace AkkaPingPong.ASLTestKit
               actor.ActorRef = CreateChildActor(context, actor.ActorType, options ?? new ActorSetUpOptions());
           });
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new MockCreateChildActorMessage(childActorType, options));
-            //return this;
+           
         }
 
-        private IActorRef CreateChildActor(IUntypedActorContext Context, Type actorType, ActorSetUpOptions Options)
-        {
-            var props = Context.DI().Props(actorType);
-
-            props = SelectableActor.PrepareProps(Options, props);
-
-            var actorRef = Context.ActorOf(props, SelectableActor.GetActorNameByType(null, actorType));
-            return actorRef;
-        }
-
+       
         public object Message { get; set; }
 
         public ActorReceives<T> ItShouldForwardItTo<TTC>( object message, ActorSelection parent = null)
         {
-            return ItShouldForwardItTo(typeof (TTC), parent);
+            return ItShouldForwardItTo(typeof (TTC), message, parent);
         }
 
         public ActorReceives<T> ItShouldForwardItTo(Type actorType, object message, ActorSelection parent = null)
         {
             return ItShouldDo((context, injectedActors) =>
             {
-                context.System.LocateActor(actorType, parent).Tell(message, context.Sender);
+                var destActor = context.System.LocateActor(actorType, parent);
+                destActor.Tell(message, context.Sender);
             });
 
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherActorTypeMessage(actorType, message, parent?.ToActorMetaData()));
-            //return this;
+           
         }
 
         public ActorReceives<T> ItShouldTellItToChildActor<TTC>(object message)
@@ -137,28 +120,37 @@ namespace AkkaPingPong.ASLTestKit
                    actor.ActorRef.Tell(message);
                });
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellChildActorTypeMessage(actorType, message));
-            //return this;
+         
         }
 
-        private void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors, Action<InjectedActors> operation)
+ private static IActorRef CreateChildActor(IActorContext context, Type actorType, ActorSetUpOptions options)
         {
-            if (InjectedActors == null) return;
-            if (InjectedActors.Item1 != null && InjectedActors.Item1.ActorType == childActorType)
+            var props = context.DI().Props(actorType);
+
+            props = SelectableActor.PrepareProps(options, props);
+
+            var actorRef = context.ActorOf(props, SelectableActor.GetActorNameByType(null, actorType));
+            return actorRef;
+        }
+
+        private static void HandleChildActorType(Type childActorType, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> injectedActors, Action<InjectedActors> operation)
+        {
+            if (injectedActors == null) return;
+            if (injectedActors.Item1 != null && injectedActors.Item1.ActorType == childActorType)
             {
-                operation(InjectedActors.Item1);
+                operation(injectedActors.Item1);
             }
-            if (InjectedActors.Item2 != null && InjectedActors.Item2.ActorType == childActorType)
+            if (injectedActors.Item2 != null && injectedActors.Item2.ActorType == childActorType)
             {
-                operation(InjectedActors.Item2);
+                operation(injectedActors.Item2);
             }
-            if (InjectedActors.Item3 != null && InjectedActors.Item3.ActorType == childActorType)
+            if (injectedActors.Item3 != null && injectedActors.Item3.ActorType == childActorType)
             {
-                operation(InjectedActors.Item3);
+                operation(injectedActors.Item3);
             }
-            if (InjectedActors.Item4 != null && InjectedActors.Item4.ActorType == childActorType)
+            if (injectedActors.Item4 != null && injectedActors.Item4.ActorType == childActorType)
             {
-                operation(InjectedActors.Item4);
+                operation(injectedActors.Item4);
             }
         }
 
@@ -171,8 +163,7 @@ namespace AkkaPingPong.ASLTestKit
                     actor.ActorRef.Forward(message);
                 });
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ForwardToChildActorTypeMessage(actorType, message));
-            //return this;
+
         }
 
         public ActorReceives<T> ItShouldForwardItTo(IActorRef actorType, object message)
@@ -181,8 +172,7 @@ namespace AkkaPingPong.ASLTestKit
             {
                 actorType.Forward(message);
             });
-            //Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new TellAnotherRefActorMessage(actorType, message));
-            //return this;
+          
         }
 
         public ActorReceives<T> ItShouldTellSender<TResponse>(TResponse response)
@@ -191,8 +181,7 @@ namespace AkkaPingPong.ASLTestKit
             {
                 context.Sender.Tell(response);
             });
-            //  Mocks.Add(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), response);
-            // return this;
+         
         }
 
         public IActorRef CreateMockActorRef<TActor>() where TActor : ActorBase

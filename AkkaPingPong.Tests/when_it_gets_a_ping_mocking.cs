@@ -38,14 +38,14 @@ namespace AkkaPingPong.Tests
 
             mockActor4.Tell(new PingMessage());
 
-            AwaitAssert(() => ExpectMsg<PongMessage>(), TimeSpan.FromMinutes(1));
-            //issue with multiple assert like this  > TODO
-
             MockFactory.ExpectMockActor(mockActor4).ToHaveReceivedMessage<PingMessage>();
             MockFactory.ExpectMockActor(mockActor3).ToHaveReceivedMessage<PingMessage>();
             MockFactory.ExpectMockActor(mockActor2).ToHaveReceivedMessage<PingMessage>();
             MockFactory.ExpectMockActor(mockActor1).ToHaveReceivedMessage<PingMessage>();
             MockFactory.ExpectMockActor(mockActor).ToHaveReceivedMessage<PingMessage>();
+
+            AwaitAssert(() => ExpectMsg<PongMessage>(), TimeSpan.FromMinutes(1));
+            //issue with multiple assert like this  > TODO
         }
 
         [Fact]
@@ -365,17 +365,17 @@ namespace AkkaPingPong.Tests
         {
             //Arrange
 
+            var mock2 = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldTellSender(new PongMessage())
+                .SetUpMockActor<MockActor2>();
+
             var mock1 = MockFactory
                 .WhenActorInitializes()
                 .ItShouldCreateChildActor(typeof(MockActor2))
                 .WhenActorReceives<PingMessage>()
                 .ItShouldTellItToChildActor(typeof(MockActor2), new PingMessage())
                 .CreateMockActorRef<MockActor1<MockActor2>>();
-
-            var mock2 = MockFactory
-                .WhenActorReceives<PingMessage>()
-                .ItShouldTellSender(new PongMessage())
-                .SetUpMockActor<MockActor2>();
 
             //Act
             mock1.Tell(new PingMessage());
@@ -490,9 +490,16 @@ namespace AkkaPingPong.Tests
         public void it_should_do_a_pong2()
         {
             //Arrange
-            //mockFactory = new AkkaMockFactory(DependencyResolver.GetContainer(), Sys);
-            var pingActor = MockFactory.WhenActorReceives<PingMessage>().ItShouldTellSender(new PongMessage()).CreateMockActor<MockActor1>();
-            var pingPongActor = MockFactory.WhenActorReceives<PingMessage>().ItShouldForwardItTo(pingActor, new PingMessage()).CreateMockActor<MockActor2>();
+
+            var pingActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldTellSender(new PongMessage())
+                .CreateMockActor<MockActor1>();
+            var pingPongActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldForwardItTo(pingActor, new PingMessage())
+                .CreateMockActor<MockActor2>();
+
             var pingPongActorSelection = MockFactory.LocateActor(pingPongActor);
 
             //Act
