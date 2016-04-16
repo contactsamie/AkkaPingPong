@@ -45,7 +45,7 @@ namespace AkkaPingPong.Tests
             MockFactory.ExpectMockActor(mockActor).ToHaveReceivedMessage<PingMessage>();
 
             AwaitAssert(() => ExpectMsg<PongMessage>(), TimeSpan.FromMinutes(1));
-            //issue with multiple assert like this  > TODO
+          
         }
 
         [Fact]

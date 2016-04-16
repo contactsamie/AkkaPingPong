@@ -15,8 +15,6 @@ namespace AkkaPingPong.Tests
         public void it_should_do_a_pong()
         {
             //Arrange
-            //  var container = new ContainerBuilder().Build();
-            // mockFactory = new AkkaMockFactory(container, Sys);
             MockFactory.UpdateContainer((builder) =>
             {
                 builder.Register<IPingPongService>(b => new FakePingPongService());

@@ -41,15 +41,12 @@ namespace AkkaPingPong.ASLTestKit
             return new ActorReceives<MockActorInitializationMessage>(MessagesReceived, Container, ActorSystem, Mocks);
         }
 
-       
-
         public ActorReceives<T> ItShouldTellAnotherActor<TA>(object message, ActorMetaData parent = null)
         {
             return ItShouldDo((context, injectedActors) =>
             {
                 context.System.LocateActor(typeof(TA), parent).Tell(message);
             });
-           
         }
 
         public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, object message, ActorSelection parent = null)
@@ -58,7 +55,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 context.System.LocateActor(actorType, parent).Tell(message);
             });
-  
         }
 
         public ActorReceives<T> ItShouldTellAnotherActor(IActorRef actorRef, object message = null)
@@ -67,7 +63,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 actorRef.Tell(message);
             });
-            
         }
 
         public ActorReceives<T> ItShouldDoNothing()
@@ -84,15 +79,13 @@ namespace AkkaPingPong.ASLTestKit
               actor.ActorRef = CreateChildActor(context, actor.ActorType, options ?? new ActorSetUpOptions());
           });
             });
-           
         }
 
-       
         public object Message { get; set; }
 
-        public ActorReceives<T> ItShouldForwardItTo<TTC>( object message, ActorSelection parent = null)
+        public ActorReceives<T> ItShouldForwardItTo<TTC>(object message, ActorSelection parent = null)
         {
-            return ItShouldForwardItTo(typeof (TTC), message, parent);
+            return ItShouldForwardItTo(typeof(TTC), message, parent);
         }
 
         public ActorReceives<T> ItShouldForwardItTo(Type actorType, object message, ActorSelection parent = null)
@@ -102,8 +95,6 @@ namespace AkkaPingPong.ASLTestKit
                 var destActor = context.System.LocateActor(actorType, parent);
                 destActor.Tell(message, context.Sender);
             });
-
-           
         }
 
         public ActorReceives<T> ItShouldTellItToChildActor<TTC>(object message)
@@ -120,10 +111,9 @@ namespace AkkaPingPong.ASLTestKit
                    actor.ActorRef.Tell(message);
                });
             });
-         
         }
 
- private static IActorRef CreateChildActor(IActorContext context, Type actorType, ActorSetUpOptions options)
+        private static IActorRef CreateChildActor(IActorContext context, Type actorType, ActorSetUpOptions options)
         {
             var props = context.DI().Props(actorType);
 
@@ -163,7 +153,6 @@ namespace AkkaPingPong.ASLTestKit
                     actor.ActorRef.Forward(message);
                 });
             });
-
         }
 
         public ActorReceives<T> ItShouldForwardItTo(IActorRef actorType, object message)
@@ -172,7 +161,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 actorType.Forward(message);
             });
-          
         }
 
         public ActorReceives<T> ItShouldTellSender<TResponse>(TResponse response)
@@ -181,7 +169,6 @@ namespace AkkaPingPong.ASLTestKit
             {
                 context.Sender.Tell(response);
             });
-         
         }
 
         public IActorRef CreateMockActorRef<TActor>() where TActor : ActorBase
@@ -210,17 +197,12 @@ namespace AkkaPingPong.ASLTestKit
             var actor = CreateMockActor<TActor>(Mocks);
             ActorSystem.CreateActor<TActor>();
             var actorSelection = ActorSystem.LocateActor<TActor>();
-
             return actorSelection;
         }
 
         protected Type CreateMockActor<TMockActor>(ConcurrentDictionary<Tuple<Guid, Type>, object> mocks) where TMockActor : ActorBase
         {
-            ItShouldDo((context, injectedActors) =>
-            {
-                MessagesReceived.GetOrAdd(Guid.NewGuid(),
-                  new MockMessages(context.Self.ToActorMetaData().Path, typeof(T)));
-            });
+            ItShouldDo((context, injectedActors) => MessagesReceived.GetOrAdd(Guid.NewGuid(), new MockMessages(context.Self.ToActorMetaData().Path, typeof(T))));
 
             Console.WriteLine("Setting Up Actor " + typeof(TMockActor).Name + " with " + mocks.Count + " items ....");
             foreach (var mock in mocks)
