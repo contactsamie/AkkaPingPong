@@ -4,6 +4,7 @@ using AkkaPingPong.ASLTestKit.Messages;
 using AkkaPingPong.ASLTestKit.Mocks;
 using Autofac;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,23 +18,26 @@ namespace AkkaPingPong.ASLTestKit
         private ActorSystem ActorSystem { set; get; }
         private ActorMetaData ParentActor { set; get; }
         private ActorMetaData ActorMetaData { set; get; }
-
-        public ExpectMockActor(Type actorType, IContainer container, ActorSystem actorSystem)
+        private ConcurrentDictionary<Guid, MockMessages> MessagesReceived { get; }
+        public ExpectMockActor(ConcurrentDictionary<Guid, MockMessages> messagesReceived, Type actorType, IContainer container, ActorSystem actorSystem)
         {
+            MessagesReceived = messagesReceived;
             ActorType = actorType;
             Container = container;
             ActorSystem = actorSystem;
         }
 
-        public ExpectMockActor(ActorMetaData actorMetaData, IContainer container, ActorSystem actorSystem)
+        public ExpectMockActor(ConcurrentDictionary<Guid, MockMessages> messagesReceived, ActorMetaData actorMetaData, IContainer container, ActorSystem actorSystem)
         {
+            MessagesReceived = messagesReceived;
             ActorMetaData = actorMetaData;
             Container = container;
             ActorSystem = actorSystem;
         }
 
-        public ExpectMockActor(IActorRef actorRef, IContainer container, ActorSystem actorSystem)
+        public ExpectMockActor(ConcurrentDictionary<Guid, MockMessages> messagesReceived, IActorRef actorRef, IContainer container, ActorSystem actorSystem)
         {
+            MessagesReceived = messagesReceived;
             ActorMetaData = actorRef.ToActorMetaData();
             Container = container;
             ActorSystem = actorSystem;
@@ -45,19 +49,12 @@ namespace AkkaPingPong.ASLTestKit
             return ToHaveReceivedMessage<T>(null, maxWaitMilliseconds);
         }
 
-        public List<T> ToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds = 5000) where T : class
+        public List<T> ToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds =10000) where T : class
         {
             return AssertAwait(() =>
             {
                 List<T> messages;
-                try
-                {
-                    messages = GetAllReceivecMessagesOfType<T>(ActorMetaData == null ? ActorSystem.LocateActor(ActorType, ParentActor) : ActorSystem.LocateActor(ActorMetaData)).Result;
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                messages = GetAllReceivecMessagesOfType<T>(ActorMetaData == null ? ActorSystem.LocateActor(ActorType, ParentActor) : ActorSystem.LocateActor(ActorMetaData));
 
                 if (PassedValidation(messageValidator, messages))
                 {
@@ -74,20 +71,13 @@ namespace AkkaPingPong.ASLTestKit
             return NotToHaveReceivedMessage<T>(null, maxWaitMilliseconds);
         }
 
-        public List<T> NotToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds = 5000) where T : class
+        public List<T> NotToHaveReceivedMessage<T>(Func<T, bool> messageValidator = null, int maxWaitMilliseconds = 10000) where T : class
         {
             return AssertAwait(() =>
             {
                 List<T> messages;
-                try
-                {
-                    messages =
-                        GetAllReceivecMessagesOfType<T>(ActorMetaData == null ? ActorSystem.LocateActor(ActorType, ParentActor) : ActorSystem.LocateActor(ActorMetaData)).Result;
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
+                messages = GetAllReceivecMessagesOfType<T>(ActorMetaData == null ? ActorSystem.LocateActor(ActorType, ParentActor) : ActorSystem.LocateActor(ActorMetaData));
+
 
                 if (!PassedValidation(messageValidator, messages))
                 {
@@ -106,7 +96,7 @@ namespace AkkaPingPong.ASLTestKit
             var passed = false;
             var lastException = new Exception();
             T result = default(T);
-            while ((DateTime.Now - now).TotalMilliseconds < durationMilliseconds)
+            while ((DateTime.Now - now).TotalMilliseconds <= durationMilliseconds)
             {
                 try
                 {
@@ -118,7 +108,7 @@ namespace AkkaPingPong.ASLTestKit
                 {
                     lastException = e;
                 }
-                System.Threading.Thread.Sleep(10 * counter);
+                System.Threading.Thread.Sleep(50);
                 counter++;
             }
             if (!passed)
@@ -140,21 +130,24 @@ namespace AkkaPingPong.ASLTestKit
             return ActorSystem.LocateActor(actor.ToActorMetaData());
         }
 
-        protected async Task<List<T>> GetAllReceivecMessagesOfType<T>(ActorSelection actorSelection) where T : class
+        protected List<T> GetAllReceivecMessagesOfType<T>(ActorSelection actorSelection) where T : class
         {
-            var t = typeof(T);
-            var path = actorSelection.ToActorMetaData().Path;
-            var mockMessagesQueryActorSelection = ActorSystem.LocateActor<MockMessagesQueryActor>();
-            var messages = await mockMessagesQueryActorSelection.Ask(new GetAllPreviousMessagesReceivedByMockActor(), TimeSpan.FromSeconds(5));
-            var m = messages as Dictionary<Guid, MockMessages>;
-            var matches = m?.Where(x =>
-             {
-                 var samePath = x.Value.ActorPath == path;
-                 var sameType = x.Value.Message == typeof(T);
-                 return samePath && sameType;
-             }) ?? new Dictionary<Guid, MockMessages>();
-            var result = matches.Select(x => x.Value.Message as T).ToList();
-            return result;
+           
+                var meta = actorSelection.ToActorMetaData();
+                var path = meta?.Path;
+
+                var messages = MessagesReceived;
+                var m = messages;
+                var matches = m?.Where(x =>
+                {
+                    var hasPath = path != null;
+                    var samePath = x.Value.ActorPath == path;
+                    var sameType = x.Value.Message == typeof(T);
+                    return hasPath && samePath && sameType;
+                }) ?? new Dictionary<Guid, MockMessages>();
+                var result = matches.Select(x => x.Value.Message as T).ToList();
+                return result;
+        
         }
 
         /// <summary>

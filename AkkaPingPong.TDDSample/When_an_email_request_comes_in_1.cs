@@ -16,9 +16,9 @@ namespace AkkaPingPong.TDDSample
         {
             //Arrange
 
-            mockFactory.CreateActor<EmailActor>();
+            MockFactory.CreateActor<EmailActor>();
             //Act
-            mockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage());
+            MockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage());
             //Assert
             try
             {

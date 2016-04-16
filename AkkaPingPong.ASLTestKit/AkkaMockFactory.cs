@@ -5,13 +5,19 @@ using AkkaPingPong.ASLTestKit.Mocks;
 using AkkaPingPong.Core;
 using Autofac;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace AkkaPingPong.ASLTestKit
 {
     public class AkkaMockFactory
     {
+
+        public  ConcurrentDictionary<Guid, MockMessages> MessagesReceived {  get; }
+
         public AkkaMockFactory(IContainer container, ActorSystem actorSystem)
         {
+            MessagesReceived=new ConcurrentDictionary<Guid, MockMessages>();
             Container = container;
             ActorSystem = actorSystem;
             var preBuilder = new ContainerBuilder();
@@ -19,9 +25,7 @@ namespace AkkaPingPong.ASLTestKit
             preBuilder.Update(Container);
             ActorSystemfactory = Container.Resolve<IActorSystemFactory>();
             ActorSystemfactory.Register(Container, (builder) => { }, ActorSystem);
-            ActorSystem.CreateActor<MockMessagesQueryActor>();
-            var init = ActorSystem.LocateActor(typeof(MockMessagesQueryActor))
-                  .Ask(new GetAllPreviousMessagesReceivedByMockActor()).Result;
+
         }
 
         public IActorRef CreateActor<T>(ActorSetUpOptions option = null, ActorMetaData parentActorMetaData = null) where T : ActorBase
@@ -33,12 +37,12 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> WhenActorReceives<T>(T message = default(T))
         {
-            return new ActorReceives<T>(Container, ActorSystem, null, message);
+            return new ActorReceives<T>(MessagesReceived, Container, ActorSystem, null, message);
         }
 
         public ActorReceives<MockActorInitializationMessage> WhenActorInitializes()
         {
-            return new ActorReceives<MockActorInitializationMessage>(Container, ActorSystem);
+            return new ActorReceives<MockActorInitializationMessage>(MessagesReceived, Container, ActorSystem);
         }
 
         public ActorSelection LocateActor<T>(ActorMetaData parentActorMetaData = null)
@@ -53,12 +57,12 @@ namespace AkkaPingPong.ASLTestKit
 
         public ExpectMockActor ExpectMockActor(Type actor)
         {
-            return new ExpectMockActor(actor, Container, ActorSystem);
+            return new ExpectMockActor(MessagesReceived, actor, Container, ActorSystem);
         }
 
         public ExpectMockActor ExpectMockActor(IActorRef actorRef)
         {
-            return new ExpectMockActor(actorRef, Container, ActorSystem);
+            return new ExpectMockActor(MessagesReceived, actorRef, Container, ActorSystem);
         }
 
         private IContainer Container { set; get; }

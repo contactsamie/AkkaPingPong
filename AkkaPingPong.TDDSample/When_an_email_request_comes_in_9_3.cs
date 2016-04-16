@@ -20,11 +20,11 @@ namespace AkkaPingPong.TDDSample
             //Arrange
             var fakeEmailSender = A.Fake<IEmailSender>();
 
-            mockFactory.UpdateContainer((builder) => builder.Register((r) => fakeEmailSender));
-            mockFactory.CreateActor<EmailSupervisorActor<EmailActor>>();
+            MockFactory.UpdateContainer((builder) => builder.Register((r) => fakeEmailSender));
+            MockFactory.CreateActor<EmailSupervisorActor<EmailActor>>();
             var emailAddress = "test@test.com";
             //Act
-            mockFactory.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
+            MockFactory.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
             //Assert
 
             AwaitAssert(() => ExpectMsg<EmailReadyToSendMessage>(message => message.EmailAddress == emailAddress));

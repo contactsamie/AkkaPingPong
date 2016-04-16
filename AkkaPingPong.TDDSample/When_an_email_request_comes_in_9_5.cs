@@ -24,19 +24,19 @@ namespace AkkaPingPong.TDDSample
             var fakeEmailSender = A.Fake<IEmailSender>();
             A.CallTo(() => fakeEmailSender.Send(emailAddress)).DoesNothing();
 
-            mockFactory.UpdateContainer((builder) => builder.Register((r) => fakeEmailSender).As<IEmailSender>());
+            MockFactory.UpdateContainer((builder) => builder.Register((r) => fakeEmailSender).As<IEmailSender>());
 
-            mockFactory
+            MockFactory
                 .WhenActorInitializes()
                 .ItShouldCreateChildActor(typeof(EmailActor))
-                 .WhenActorReceive<SendEmailMessage>()
+                 .WhenActorReceives<SendEmailMessage>()
                 .ItShouldTellSender(new EmailReadyToSendMessage(emailAddress))
-                .WhenActorReceive<SendEmailMessage>()
+                .WhenActorReceives<SendEmailMessage>()
                 .ItShouldForwardItToChildActor(typeof(EmailActor), new SendEmailMessage(emailAddress))
                 .CreateMockActor<MockActor<EmailActor>>();
 
             //Act
-            mockFactory.LocateActor(typeof(MockActor<>)).Tell(new SendEmailMessage(emailAddress));
+            MockFactory.LocateActor(typeof(MockActor<>)).Tell(new SendEmailMessage(emailAddress));
             // mockFactory.JustWait();
             //Assert
             AwaitAssert(() => ExpectMsg<EmailReadyToSendMessage>(message => message.EmailAddress == emailAddress), TimeSpan.FromMinutes(1));

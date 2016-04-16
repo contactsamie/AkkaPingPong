@@ -7,8 +7,6 @@ using Autofac;
 using System;
 using Xunit;
 
-//[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
 namespace AkkaPingPong.Tests
 {
     public class when_it_gets_a_ping : TestKitTestBase
@@ -19,14 +17,14 @@ namespace AkkaPingPong.Tests
             //Arrange
             //  var container = new ContainerBuilder().Build();
             // mockFactory = new AkkaMockFactory(container, Sys);
-            mockFactory.UpdateContainer((builder) =>
+            MockFactory.UpdateContainer((builder) =>
             {
                 builder.Register<IPingPongService>(b => new FakePingPongService());
             });
-            mockFactory.CreateActor<PingPongActor<MockActor>>();
+            MockFactory.CreateActor<PingPongActor<MockActor>>();
 
             //Act
-            mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+            MockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
 
             //Assert
             AwaitAssert(() => ExpectMsg<PingMessageCompleted>(), TimeSpan.FromSeconds(5));
@@ -38,17 +36,17 @@ namespace AkkaPingPong.Tests
             //Arrange
             //var container = new ContainerBuilder().Build();
             // mockFactory = new AkkaMockFactory(container, Sys);
-            mockFactory.UpdateContainer((builder) =>
+            MockFactory.UpdateContainer((builder) =>
             {
                 builder.Register<IPingPongService>(b => new FakePingPongService());
             });
-            mockFactory.CreateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>();
+            MockFactory.CreateActor<PingPongActor<PingCoordinatorActor<PingActor, PingBlockingActor>>>();
 
             //Act
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
-                mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+                MockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
 
             //Assert
@@ -60,19 +58,19 @@ namespace AkkaPingPong.Tests
         {
             // var container = new ContainerBuilder().Build();
             //  mockFactory = new AkkaMockFactory(container, Sys);
-            mockFactory.UpdateContainer((builder) =>
+            MockFactory.UpdateContainer((builder) =>
             {
                 builder.Register<IPingPongService>(b => new FakePingPongService());
             });
             //Arrange
-            mockFactory.CreateActor<PingPongActor<MockActor>>();
+            MockFactory.CreateActor<PingPongActor<MockActor>>();
 
             //Act
             for (var i = 0; i < 10; i++)
             {
                 System.Threading.Thread.Sleep(1000);
 
-                mockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
+                MockFactory.LocateActor(typeof(PingPongActor<>)).Tell(new PingMessage());
             }
 
             //Assert
@@ -84,15 +82,15 @@ namespace AkkaPingPong.Tests
         {
             // var container = new ContainerBuilder().Build();
             //  mockFactory = new AkkaMockFactory(container, Sys);
-            mockFactory.UpdateContainer((builder) =>
+            MockFactory.UpdateContainer((builder) =>
             {
                 builder.Register<IPingPongService>(b => new FakePingPongService());
             });
             //Arrange
-            mockFactory.CreateActor<PingCoordinatorActor<MockActor1, MockActor2>>();
+            MockFactory.CreateActor<PingCoordinatorActor<MockActor1, MockActor2>>();
 
             //Act
-            mockFactory.LocateActor(typeof(PingCoordinatorActor<,>)).Tell(new PingMessage());
+            MockFactory.LocateActor(typeof(PingCoordinatorActor<,>)).Tell(new PingMessage());
 
             //Assert
             AwaitAssert(() => ExpectMsg<SorryImStashing>(), TimeSpan.FromSeconds(20));

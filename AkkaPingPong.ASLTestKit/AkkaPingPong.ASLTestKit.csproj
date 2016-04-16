@@ -91,23 +91,15 @@
     <Compile Include="AkkaMockFactory.cs" />
     <Compile Include="ExpectMockActor.cs" />
     <Compile Include="FakeActorSystemFactory.cs" />
-    <Compile Include="Messages\ForwardToChildActorTypeMessage.cs" />
     <Compile Include="Messages\ItShouldExecuteLambda.cs" />
-    <Compile Include="Messages\ItTellAnotherActorMessage.cs" />
-    <Compile Include="Messages\TellAnotherActorTypeMessage.cs" />
-    <Compile Include="Messages\TellChildActorTypeMessage.cs" />
+    <Compile Include="Mocks\MockMessages.cs" />
     <Compile Include="State\IMockActorState.cs" />
     <Compile Include="Models\InjectedActors.cs" />
-    <Compile Include="Messages\GetAllPreviousMessagesReceivedByMockActor.cs" />
-    <Compile Include="Messages\TellAnotherRefActorMessage.cs" />
     <Compile Include="Messages\MockActorInitializationMessage.cs" />
     <Compile Include="Mocks\MockActors.cs" />
     <Compile Include="State\MockActorState.cs" />
-    <Compile Include="Messages\MockCreateChildActorMessage.cs" />
     <Compile Include="Mocks\MockActor.cs" />
     <Compile Include="Messages\MockSetUpMessage.cs" />
-    <Compile Include="Messages\MockThrowExceptionmessage.cs" />
-    <Compile Include="Messages\TellAnotherActorMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
