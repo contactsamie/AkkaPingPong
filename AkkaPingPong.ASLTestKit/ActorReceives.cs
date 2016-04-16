@@ -107,6 +107,11 @@ namespace AkkaPingPong.ASLTestKit
 
         public object Message { get; set; }
 
+        public ActorReceives<T> ItShouldForwardItTo<TTC>( object message, ActorSelection parent = null)
+        {
+            return ItShouldForwardItTo(typeof (TTC), parent);
+        }
+
         public ActorReceives<T> ItShouldForwardItTo(Type actorType, object message, ActorSelection parent = null)
         {
             return ItShouldDo((context, injectedActors) =>

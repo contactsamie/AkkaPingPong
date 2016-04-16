@@ -12,6 +12,43 @@ namespace AkkaPingPong.Tests
     public class when_it_gets_a_ping_mocking : TestKitTestBase
     {
         [Fact]
+        public void can_send()
+        {
+            //Arrange
+            var mockActor = MockFactory.WhenActorReceives<PingMessage>()
+              .ItShouldTellSender(new PongMessage())
+              .CreateMockActorRef<MockActor>();
+
+            var mockActor1 = MockFactory.WhenActorReceives<PingMessage>()
+                .ItShouldForwardItTo<MockActor>(new PingMessage())
+                .CreateMockActorRef<MockActor1>();
+
+            var mockActor2 = MockFactory.WhenActorReceives<PingMessage>()
+                .ItShouldForwardItTo<MockActor1>(new PingMessage())
+                .CreateMockActor<MockActor2>();
+
+            var mockActor3 = MockFactory.WhenActorReceives<PingMessage>()
+                .ItShouldForwardItTo<MockActor2>(new PingMessage())
+                .CreateMockActor<MockActor3>();
+
+            var mockActor4 =
+                      MockFactory.WhenActorReceives<PingMessage>()
+                .ItShouldForwardItTo<MockActor3>(new PingMessage())
+                .CreateMockActorRef<MockActor4>();
+
+            mockActor4.Tell(new PingMessage());
+
+            AwaitAssert(() => ExpectMsg<PongMessage>(), TimeSpan.FromMinutes(1));
+            //issue with multiple assert like this  > TODO
+
+            MockFactory.ExpectMockActor(mockActor4).ToHaveReceivedMessage<PingMessage>();
+            MockFactory.ExpectMockActor(mockActor3).ToHaveReceivedMessage<PingMessage>();
+            MockFactory.ExpectMockActor(mockActor2).ToHaveReceivedMessage<PingMessage>();
+            MockFactory.ExpectMockActor(mockActor1).ToHaveReceivedMessage<PingMessage>();
+            MockFactory.ExpectMockActor(mockActor).ToHaveReceivedMessage<PingMessage>();
+        }
+
+        [Fact]
         public void can_send_to_all_child_actors_1()
         {
             //Arrange
