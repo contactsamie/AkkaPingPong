@@ -57,7 +57,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
             {
                 handled = true;
                 var forwarding = response as ItShouldExecuteLambda;
-                forwarding.Operation(Context, InjectedActors);
+                forwarding.Operation(Context, InjectedActors,this);
             }
             return handled;
         }

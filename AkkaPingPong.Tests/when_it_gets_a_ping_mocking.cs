@@ -699,7 +699,7 @@ namespace AkkaPingPong.Tests
             var called = false;
             var pingPongActor = MockFactory
                 .WhenActorReceives<PingMessage>().ItShouldTellSender(new PongMessage())
-                .WhenActorReceives<PingMessage>().ItShouldDo((context, injectedActors) =>
+                .WhenActorReceives<PingMessage>().ItShouldDo((context, injectedActors, actorInstance) =>
                 {
                     called = true;
                 }).CreateMockActorRef<MockActor2>();
