@@ -1,6 +1,6 @@
 ﻿using Akka.Actor;
 using AkkaPingPong.AkkaTestBase;
-using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xunit;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
@@ -13,7 +13,6 @@ namespace AkkaPingPong.TDDSample
     public class When_an_email_request_comes_in_5 : TestKitTestBase
     {
         [Fact]
-        // [ExpectedException]
         public void it_should_send_it_out()
         {
             //Arrange
@@ -23,15 +22,9 @@ namespace AkkaPingPong.TDDSample
             //Act
             MockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage(emailAddress));
             //Assert
-            try
-            {
-                AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
-                Assert.IsTrue(TestEmailSender.HasSentEmail);
-                throw new Exception();
-            }
-            catch (Exception)
-            {
-            }
+
+            AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress));
+            Xunit.Assert.Throws<AssertFailedException>(() => Assert.IsTrue(TestEmailSender.HasSentEmail));
         }
 
         public interface IEmailSender

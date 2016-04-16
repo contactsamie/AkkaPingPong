@@ -27,6 +27,20 @@ namespace AkkaPingPong.TDDSample
 
             //Assert
             AwaitAssert(() => ExpectMsg<EmailReadyToSendMessage>(message => message.EmailAddress == emailAddress), TimeSpan.FromMinutes(1));
+        }
+
+        [Fact]
+        public void it_should_send_it_out2()
+        {
+            //Arrange
+            const string emailAddress = "test@test.com";
+            MockFactory.WhenActorReceives<SendEmailMessage>().ItShouldTellSender(new EmailSentMessage(emailAddress)).SetUpMockActor<MockActor>();
+            MockFactory.CreateActor<EmailSupervisorActor<MockActor>>();
+
+            //Act
+            MockFactory.LocateActor(typeof(EmailSupervisorActor<>)).Tell(new SendEmailMessage(emailAddress));
+
+            //Assert
             AwaitAssert(() => ExpectMsg<EmailSentMessage>(message => message.EmailAddress == emailAddress), TimeSpan.FromMinutes(1));
         }
 

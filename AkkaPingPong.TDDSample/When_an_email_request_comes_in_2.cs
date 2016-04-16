@@ -15,10 +15,11 @@ namespace AkkaPingPong.TDDSample
         public void it_should_send_it_out()
         {
             //Arrange
-
             MockFactory.CreateActor<EmailActor>();
+
             //Act
             MockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage());
+
             //Assert
             AwaitAssert(() => ExpectMsg<EmailSentMessage>());
         }

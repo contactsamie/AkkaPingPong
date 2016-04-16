@@ -1,7 +1,7 @@
 ﻿using Akka.Actor;
 using AkkaPingPong.AkkaTestBase;
-using System;
 using Xunit;
+using Xunit.Sdk;
 
 namespace AkkaPingPong.TDDSample
 {
@@ -15,19 +15,13 @@ namespace AkkaPingPong.TDDSample
         public void it_should_send_it_out()
         {
             //Arrange
-
             MockFactory.CreateActor<EmailActor>();
+
             //Act
             MockFactory.LocateActor(typeof(EmailActor)).Tell(new SendEmailMessage());
+
             //Assert
-            try
-            {
-                AwaitAssert(() => ExpectMsg<EmailSentMessage>());
-                throw new Exception();
-            }
-            catch (Exception)
-            {
-            }
+            Assert.Throws<TrueException>(() => AwaitAssert(() => ExpectMsg<EmailSentMessage>()));
         }
 
         public class SendEmailMessage { }
