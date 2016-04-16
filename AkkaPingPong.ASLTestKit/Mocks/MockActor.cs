@@ -5,12 +5,19 @@ using AkkaPingPong.ASLTestKit.State;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using Akka.Actor;
 
 namespace AkkaPingPong.ASLTestKit.Mocks
 {
-    public abstract class MockActorBase : StatefullReceiveActor<MockActorState>
+    public abstract class MockActorBase : StatefullReceiveActor<MockActorState>, IWithUnboundedStash
     {
         protected Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors> InjectedActors { set; get; }
+
+        public IStash Stash
+        {
+            get; set;
+        }
 
         protected MockActorBase(IMockActorState state)
         {
@@ -57,7 +64,7 @@ namespace AkkaPingPong.ASLTestKit.Mocks
             {
                 handled = true;
                 var forwarding = response as ItShouldExecuteLambda;
-                forwarding.Operation(Context, InjectedActors,this);
+                forwarding.Operation(Context, InjectedActors,this, Stash);
             }
             return handled;
         }

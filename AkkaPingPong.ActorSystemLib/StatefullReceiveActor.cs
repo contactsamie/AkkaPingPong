@@ -7,11 +7,12 @@ using System.Collections.Generic;
 
 namespace AkkaPingPong.ActorSystemLib
 {
+   
     public abstract class StatefullReceiveActor : StatefullReceiveActor<object>
     {
     }
 
-    public abstract class StatefullReceiveActor<T> : ReceiveActor where T : new()
+    public abstract class StatefullReceiveActor<T> :  ReceiveActor where T : new()
     {
         private Dictionary<Guid, Tuple<T, DateTime>> StateHistory { set; get; }
 

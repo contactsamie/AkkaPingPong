@@ -43,7 +43,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldTellAnotherActor<TA>(object message, ActorMetaData parent = null)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 context.System.LocateActor(typeof(TA), parent).Tell(message);
             });
@@ -51,7 +51,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldTellAnotherActor(Type actorType, object message, ActorSelection parent = null)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 context.System.LocateActor(actorType, parent).Tell(message);
             });
@@ -59,7 +59,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldTellAnotherActor(IActorRef actorRef, object message = null)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 actorRef.Tell(message);
             });
@@ -72,7 +72,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldCreateChildActor(Type childActorType, ActorSetUpOptions options = null)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 HandleChildActorType(childActorType, injectedActors, (actor) =>
           {
@@ -90,7 +90,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldForwardItTo(Type actorType, object message, ActorSelection parent = null)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 var destActor = context.System.LocateActor(actorType, parent);
                 destActor.Tell(message, context.Sender);
@@ -104,7 +104,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldTellItToChildActor(Type actorType, object message)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 HandleChildActorType(actorType, injectedActors, (actor) =>
                {
@@ -146,7 +146,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldForwardItToChildActor(Type actorType, object message)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 HandleChildActorType(actorType, injectedActors, (actor) =>
                 {
@@ -157,7 +157,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldForwardItTo(IActorRef actorType, object message)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 actorType.Forward(message);
             });
@@ -165,7 +165,7 @@ namespace AkkaPingPong.ASLTestKit
 
         public ActorReceives<T> ItShouldTellSender<TResponse>(TResponse response)
         {
-            return ItShouldDo((context, injectedActors, actorInstance) =>
+            return ItShouldDo((context, injectedActors, actorInstance,stash) =>
             {
                 context.Sender.Tell(response);
             });
@@ -202,7 +202,7 @@ namespace AkkaPingPong.ASLTestKit
 
         protected Type CreateMockActor<TMockActor>(ConcurrentDictionary<Tuple<Guid, Type>, object> mocks) where TMockActor : ActorBase
         {
-            ItShouldDo((context, injectedActors, actorInstance) => MessagesReceived.GetOrAdd(Guid.NewGuid(), new MockMessages(context.Self.ToActorMetaData().Path, typeof(T))));
+            ItShouldDo((context, injectedActors, actorInstance,stash) => MessagesReceived.GetOrAdd(Guid.NewGuid(), new MockMessages(context.Self.ToActorMetaData().Path, typeof(T))));
 
             Console.WriteLine("Setting Up Actor " + typeof(TMockActor).Name + " with " + mocks.Count + " items ....");
             foreach (var mock in mocks)
@@ -233,7 +233,7 @@ namespace AkkaPingPong.ASLTestKit
         public ActorReceives<T> ItShouldDo(Action operation)
         {
 
-            Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>,MockActorBase> op =(context, injectedActors, actorInstance) => { operation(); };
+            Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>,MockActorBase, IStash> op =(context, injectedActors, actorInstance,stash) => { operation(); };
 
             Mocks.GetOrAdd(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(op));
             return this;
@@ -243,7 +243,7 @@ namespace AkkaPingPong.ASLTestKit
         {
 
             Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>,
-                    MockActorBase> op =(context, injectedActors, actorInstance) => { operation(context); };
+                    MockActorBase, IStash> op =(context, injectedActors, actorInstance,stash) => { operation(context); };
 
             Mocks.GetOrAdd(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(op));
             return this;
@@ -252,13 +252,23 @@ namespace AkkaPingPong.ASLTestKit
         {
 
             Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>,
-                    MockActorBase> op =(context, injectedActors, actorInstance) => { operation(context, injectedActors); };
+                    MockActorBase, IStash> op =(context, injectedActors, actorInstance,stash) => { operation(context, injectedActors); };
 
             Mocks.GetOrAdd(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(op));
             return this;
         }
 
         public ActorReceives<T> ItShouldDo(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase> operation)
+        {
+
+            Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>,
+                    MockActorBase, IStash> op = (context, injectedActors, actorInstance, stash) => { operation(context, injectedActors, actorInstance); };
+
+            Mocks.GetOrAdd(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(op));
+            return this;
+        }
+
+        public ActorReceives<T> ItShouldDo(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase, IStash> operation)
         {
              Mocks.GetOrAdd(new Tuple<Guid, Type>(Guid.NewGuid(), typeof(T)), new ItShouldExecuteLambda(operation));
             return this;

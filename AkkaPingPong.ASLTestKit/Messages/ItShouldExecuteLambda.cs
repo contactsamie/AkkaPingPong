@@ -7,11 +7,11 @@ namespace AkkaPingPong.ASLTestKit.Messages
 {
     public class ItShouldExecuteLambda
     {
-        public ItShouldExecuteLambda(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase> operation)
+        public ItShouldExecuteLambda(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase, IStash> operation)
         {
             Operation = operation;
         }
 
-        public Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase> Operation { private set; get; }
+        public Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase, IStash> Operation { private set; get; }
     }
 }
