@@ -26,8 +26,8 @@ namespace AkkaPingPong.ASLTestKit.Mocks
             ReceiveAny(message =>
             {
                 var myState = GetState();
-                var results = myState.MockSetUpMessages.Where(s => s.WhenInComing == message.GetType() && s.Owner == GetType()).ToList();
-
+                var results = myState.MockSetUpMessages
+                .Where(s => s.WhenInComing == message.GetType() && s.Owner == GetType()).ToList();
                 ProcessMockSetUpMessage(results);
             });
         }

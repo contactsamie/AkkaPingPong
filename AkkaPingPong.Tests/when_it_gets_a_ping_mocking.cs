@@ -691,6 +691,108 @@ namespace AkkaPingPong.Tests
             MockFactory.ExpectMockActor(pingActor).ToHaveReceivedMessage<PingMessage>();
         }
 
+
+        [Fact]
+        public void stash_test()
+        {
+            //Arrange
+            var pingPongActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldDo((a) =>a.Stash.Stash())
+                .CreateMockActorRef<MockActor2>();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+           
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+
+        }
+
+        [Fact]
+        public void stash_test3()
+        {
+            //Arrange
+            var pingPongActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                //.ItShouldDo((a) => a.Stash.Stash())
+                .ItShouldDoNothing()
+                .CreateMockActorRef<MockActor2>();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+            MockFactory.ClearAllMessages();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+
+        }
+
+
+        [Fact]
+        public void stash_test4()
+        {
+            //Arrange
+            var pingPongActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldDo((a) => a.Stash.Stash())
+                .CreateMockActorRef<MockActor2>();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+            MockFactory.ClearAllMessages();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            //Assert
+            MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>();
+
+
+        }
+
+
+        [Fact]
+        public void stash_test2()
+        {
+            //Arrange
+            var pingPongActor = MockFactory
+                .WhenActorReceives<PingMessage>()
+                .ItShouldDo((a) => a.Stash.Stash())
+                .CreateMockActorRef<MockActor2>();
+
+            //Act
+            pingPongActor.Tell(new PingMessage());
+
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+            MockFactory.ClearAllMessages();
+
+            //Assert
+            Assert.Throws<Exception>(()=> MockFactory.ExpectMockActor(pingPongActor).ToHaveReceivedMessage<PingMessage>());
+
+        }
+
         [Fact]
         public void Supervision()
         {

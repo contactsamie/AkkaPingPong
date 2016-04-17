@@ -62,6 +62,11 @@ namespace AkkaPingPong.ASLTestKit
             return new ExpectMockActor(MessagesReceived, actorRef, Container, ActorSystem);
         }
 
+        public void ClearAllMessages()
+        {
+            MessagesReceived.Clear();
+        }
+
         private IContainer Container { set; get; }
         private ActorSystem ActorSystem { set; get; }
 
