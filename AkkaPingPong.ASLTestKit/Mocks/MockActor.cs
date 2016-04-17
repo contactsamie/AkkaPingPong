@@ -59,14 +59,10 @@ namespace AkkaPingPong.ASLTestKit.Mocks
 
         private bool Execute(object response, object message)
         {
-            bool handled = false;
-            if (response is ItShouldExecuteLambda)
-            {
-                handled = true;
-                var forwarding = response as ItShouldExecuteLambda;
-                forwarding.Operation(Context, InjectedActors,this, Stash);
-            }
-            return handled;
+            var lambda = response as ItShouldExecuteLambda;
+            if (lambda == null) return false;
+            lambda.Operation(new ActorAccess(Context, InjectedActors, this, Stash,Become) );
+            return true;
         }
 
         protected override void PreStart()

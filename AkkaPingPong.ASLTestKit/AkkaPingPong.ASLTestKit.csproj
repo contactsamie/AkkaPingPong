@@ -91,6 +91,7 @@
     <Compile Include="AkkaMockFactory.cs" />
     <Compile Include="ExpectMockActor.cs" />
     <Compile Include="FakeActorSystemFactory.cs" />
+    <Compile Include="Messages\ActorAccess.cs" />
     <Compile Include="Messages\ItShouldExecuteLambda.cs" />
     <Compile Include="Mocks\MockMessages.cs" />
     <Compile Include="State\IMockActorState.cs" />

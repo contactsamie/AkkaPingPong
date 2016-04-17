@@ -1,17 +1,14 @@
-using Akka.Actor;
-using AkkaPingPong.ASLTestKit.Models;
 using System;
-using AkkaPingPong.ASLTestKit.Mocks;
 
 namespace AkkaPingPong.ASLTestKit.Messages
 {
     public class ItShouldExecuteLambda
     {
-        public ItShouldExecuteLambda(Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase, IStash> operation)
+        public ItShouldExecuteLambda(Action<ActorAccess> operation)
         {
             Operation = operation;
         }
 
-        public Action<IUntypedActorContext, Tuple<InjectedActors, InjectedActors, InjectedActors, InjectedActors>, MockActorBase, IStash> Operation { private set; get; }
+        public Action<ActorAccess> Operation { private set; get; }
     }
 }
